@@ -1,5 +1,5 @@
-import { MODELS, GPU_SETUPS, getCompatiblePairs, LLAMACPP_REPO, PR_LOOKBACK_DAYS, OUTPUT_DIR, REPORT_FILENAME_PREFIX, modelFitsSetup } from "./config.js";
-import type { ModelEntry, GpuSetup } from "./config.js";
+import { MODELS, GPU_SETUPS, QUANT_LEVELS, getCompatiblePairs, LLAMACPP_REPO, PR_LOOKBACK_DAYS, OUTPUT_DIR, REPORT_FILENAME_PREFIX, modelFitsSetup, freeVramGB } from "./config.js";
+import type { ModelEntry, GpuSetup, QuantLevel } from "./config.js";
 
 export function buildSystemPrompt(): string {
   return `You are a technical analyst specializing in llama.cpp, LLM inference, and GPU-accelerated local inference. Your job is to research recently merged PRs in the llama.cpp repository, categorize them, and summarize their impact.
@@ -115,9 +115,12 @@ This page is the canonical reference that persists across daily runs. It should 
 - Use the write tool to save both the daily report and the updated run-commands.md — do NOT just output them in your response
 - For PRs you cannot access/fetch, note them in the summary table but skip the details
 - If no new PRs were merged in the window, generate a report stating that clearly
-- The model×GPU compatibility matrix for reference:
+- The run-commands.md page uses quant-specific \`<div class="cmd-block" data-quant="Q4_K_M">\` blocks controlled by a JS dropdown. Preserve this structure.
+- Model data sourced from Unsloth HuggingFace GGUF repos (\`-hf\` flag syntax)
+
+### Model/GPU compatibility (Q4_K_M baseline):
 
 | Model | ${GPU_SETUPS.map(s => s.name).join(" | ")} |
 |-------|${GPU_SETUPS.map(() => "-------").join("|")}|
-${MODELS.map(m => `| ${m.name} | ${GPU_SETUPS.map(s => modelFitsSetup(m, s) ? '✅' : `❌ ${s.totalVramGB}GB`).join(" | ")} |`).join("\n")}`;
+${MODELS.map(m => `| ${m.name} | ${GPU_SETUPS.map(s => modelFitsSetup(m, "Q4_K_M", s) ? '✅' : `❌ ${s.totalVramGB}GB`).join(" | ")} |`).join("\n")}`;
 }

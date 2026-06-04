@@ -9,6 +9,7 @@ title = "Llama.cpp Daily News"
 git-repository-url = "https://github.com/Kahdeg-15520487/llamacpp_newsfeed"
 edit-url-template = "https://github.com/Kahdeg-15520487/llamacpp_newsfeed/edit/master/output/{path}"
 site-url = "/"
+additional-js = ["quant-selector.js"]
 
 [output.html.search]
 enable = true
