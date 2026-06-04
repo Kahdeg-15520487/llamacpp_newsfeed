@@ -8,7 +8,7 @@
   const MODELS = [
     {
       id: "qwen330b",
-      name: "Qwen3 30B A3B",
+      name: "Qwen 3.6 35B A3B MTP",
       hfRepo: "unsloth/Qwen3-30B-A3B-GGUF",
       ctx: 40960,
       arch: "qwen3moe",
@@ -65,17 +65,32 @@
   const QUANTS = ["Q4_K_M", "Q5_K_M", "Q6_K"];
 
   // ── Helpers ────────────────────────────────────────────
+  // ── Per-model KV cache memory (GB per 1K tokens) ──
+  var KV_PER_1K = {
+    qwen330b:  0.12,  // 30B MoE: ~48 layers × 5120 dim
+    qwen27b:   0.10,  // 27B dense
+    gemma12b:  0.06,  // 12B: ~40 layers × 3840 dim
+    gemma27b:  0.10,  // 27B dense
+  };
+
   function freeGB(model, quant, setup) {
     return Math.max(0, setup.usable - model.quants[quant].size);
   }
 
-  function recCtx(model, quant, setup) {
+  function maxCtx(model, quant, setup) {
     var free = freeGB(model, quant, setup);
-    if (free <= 1) return { val: "—", cls: "red" };
-    if (free <= 3) return { val: formatCtx(Math.floor(free * 400)), cls: "yellow" };
-    if (free <= 8) return { val: formatCtx(Math.floor(free * 800)), cls: "green" };
-    // Plenty of VRAM — use native context window
-    return { val: formatCtx(model.ctx), cls: "green" };
+    var perK = KV_PER_1K[model.id] || 0.10;
+    var estimated = Math.floor(free / perK * 1000);
+    return Math.min(estimated, model.ctx);
+  }
+
+  function recCtx(model, quant, setup) {
+    var ctx = maxCtx(model, quant, setup);
+    var free = freeGB(model, quant, setup);
+    if (free <= 0.5) return { val: "—", cls: "red", tooltip: "Model does not fit" };
+    if (ctx < 8000) return { val: formatCtx(ctx), cls: "red", tooltip: "Insufficient for practical use" };
+    if (ctx < 64000) return { val: formatCtx(ctx), cls: "yellow", tooltip: "Below 64K target" };
+    return { val: formatCtx(ctx), cls: "green", tooltip: "Meets 64K+ target" };
   }
 
   function formatCtx(n) {
@@ -84,9 +99,9 @@
   }
 
   function badge(free, rec) {
-    if (rec.cls === "red") return '<span class="badge-red">❌ ' + free.toFixed(1) + ' GB free</span>';
-    if (rec.cls === "yellow") return '<span class="badge-yellow">⚠️ ' + free.toFixed(1) + ' GB free</span>';
-    return '<span class="badge-green">✅ ' + free.toFixed(1) + ' GB free</span>';
+    if (rec.cls === "red") return '<span class="badge-red" title="' + rec.tooltip + '">❌ ' + free.toFixed(1) + ' GB</span>';
+    if (rec.cls === "yellow") return '<span class="badge-yellow" title="' + rec.tooltip + '">⚠️ ' + free.toFixed(1) + ' GB</span>';
+    return '<span class="badge-green" title="' + rec.tooltip + '">✅ ' + free.toFixed(1) + ' GB</span>';
   }
 
   // ── Render ─────────────────────────────────────────────
@@ -119,23 +134,28 @@
       if (el) el.textContent = model.quants[quant].size.toFixed(1) + " GB";
     });
 
-    // Update totals
-    var vramCtx = 0;
+    // Update totals (64K target)
     var totalPairs = 0;
+    var over64k = 0;
+    var under64k = 0;
     var fails = 0;
     MODELS.forEach(function(model) {
       SETUPS.forEach(function(setup) {
         if (model.quants[quant].size <= setup.usable) {
           totalPairs++;
-          var free = freeGB(model, quant, setup);
-          if (free < 1) fails++;
+          var ctx = maxCtx(model, quant, setup);
+          if (ctx < 8000) fails++;
+          else if (ctx >= 64000) over64k++;
+          else under64k++;
         }
       });
     });
     var pairCount = document.getElementById("pair-count");
+    var passCount = document.getElementById("pass-count");
     var failCount = document.getElementById("fail-count");
     if (pairCount) pairCount.textContent = totalPairs;
-    if (failCount) failCount.textContent = fails;
+    if (passCount) passCount.textContent = over64k;
+    if (failCount) failCount.textContent = under64k + fails;
   }
 
   // ── Init ───────────────────────────────────────────────

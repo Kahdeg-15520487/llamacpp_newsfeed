@@ -38,7 +38,7 @@ export const GPU_SETUPS: GpuSetup[] = [
 // Model catalog — data from Unsloth HF API (sizes in GB = bytes / 1,073,741,824)
 export const MODELS: ModelEntry[] = [
   {
-    name: "Qwen3 30B A3B",
+    name: "Qwen 3.6 35B A3B MTP",
     family: "qwen",
     paramSize: "30B",
     spec: "MoE (3B active) + MTP",
