@@ -10,86 +10,24 @@
 
 | Metric | Count |
 |--------|-------|
-| PRs analyzed | 10 |
-| Backend PRs | 5 |
-| Bug fixes | 2 |
-| Performance PRs | 4 |
+| PRs analyzed | 7 |
+| Backend PRs | 3 |
+| Bug fixes | 1 |
+| Performance PRs | 2 |
 | New features | 2 |
-| Model Support | 2 |
-| Server/API | 1 |
-| PRs with command suggestions | 6 |
+| PRs with command suggestions | 3 |
 
 ---
 
 ## 🔍 PR Details
 
-### [Backend] — PR #24074: metal : reduce rset heartbeat from 500ms -> 5ms
+### [Performance] — PR #24074: metal : reduce rset heartbeat from 500ms -> 5ms
 
 **Merged:** 2026-06-04 | **Author:** @ggerganov
 
-**Summary:** Reduces the Metal backend's residency set heartbeat interval from 500ms to 5ms. The heartbeat loop keeps GPU residency sets alive on macOS. This dramatically reduces the time it takes for a ggML application to exit on macOS — from potentially hundreds of milliseconds of delay down to near-instantaneous. macOS users running inference on Apple Silicon will notice faster application teardown.
+**Summary:** Reduces the Metal backend's residency set heartbeat loop interval from 500ms to 5ms. This significantly improves the time it takes for a ggml application to exit cleanly on macOS. The heartbeat keeps Metal resource allocation sets alive, and a faster polling rate means less delay during shutdown. Affects all macOS users running llama.cpp with Metal acceleration.
 
-**Affected areas:** Apple Metal, ggml
-
----
-
-### [Backend] — PR #23834: ggml-webgpu: FlashAttention refactor + standardize quantization support
-
-**Merged:** 2026-06-04 | **Author:** @reeselevine
-
-**Summary:** Major refactor of the WebGPU FlashAttention implementation. Three separate FlashAttention paths (vec, tile, sg_matrix) were cleaned up with common setup, and quantized KV-cache support (q4_0, q8_0) was added to the tile-based path used in browsers. This means quantized KV-caches now work properly in WebGPU browser inference for longer sequences. The K and V cache formats are also now independently configurable (e.g., f16 for K and q8_0 for V). Users running llama.cpp in-browser via WebGPU will benefit from FA-enabled quantized KV-cache support for reduced memory usage.
-
-**Affected areas:** WebGPU, ggml
-
----
-
-### [Backend] — PR #22754: ggml-cpu: extend RVV quantization vec dot to higher VLENs
-
-**Merged:** 2026-06-04 | **Author:** @rehan-10xengineer
-
-**Summary:** Adds RISC-V Vector (RVV) implementations for quantized vector dot product kernels supporting VLENs of 512-bit and 1024-bit. Covers 11 quantized kernel types including q3_K, q6_K, iq1_s, iq1_m, iq2_s, iq2_xs, iq2_xxs, iq3_s, iq3_xxs, iq4_xs, and tq1_0. Users on RISC-V hardware with wider vector units (VLEN > 256) will see significant inference speedups, especially for quantized models. Each VLEN variant now has its own function call for optimized dispatch.
-
-**Affected areas:** ggml-cpu, RVV, quantization
-
----
-
-### [Backend] — PR #23641: vulkan: don't hold the device mutex while compiling pipelines
-
-**Merged:** 2026-06-01 | **Author:** @jeffbolznv
-
-**Summary:** Fixes a performance bottleneck in the Vulkan backend where the device mutex was held during shader pipeline compilation, preventing other threads from making progress. With this change, pipeline compilation is done under a separate lock, allowing concurrent work. Combined with PR #23637, test-backend-ops timings dropped from 8:24 (single-thread) to 2:26. Vulkan users will see significantly faster model loading and reduced startup stalls, particularly on multi-GPU setups.
-
-**Affected areas:** Vulkan, ggml
-
----
-
-### [Backend] — PR #23376: vulkan: reduces lock contention
-
-**Merged:** 2026-06-01 | **Author:** @winstonma
-
-**Summary:** Replaces exclusive mutex usage with a shared_mutex for the Vulkan backend's pinned memory management. Since write operations (setup, graph allocation) are rare and reads dominate during inference, this allows concurrent reads without blocking. Shared locking reduces total lock wait time by approximately 25% in read-heavy inference workloads. Vulkan users on both NVIDIA and AMD GPUs will experience smoother multi-threaded inference with lower latency variance.
-
-**Affected areas:** Vulkan, ggml
-
----
-
-### [Model Support] — PR #21733: Add EXAONE 4.5 implementations
-
-**Merged:** 2026-06-01 | **Author:** @nuxlear
-
-**Summary:** Adds support for the EXAONE 4.5 model architecture from LG AI Research (33B parameters). Uses the same LLM architecture as EXAONE 4, plus adds `n_kv_heads` support to the CLIP model for GQA-compatible vision transformers. Users can now run EXAONE 4.5 models through llama.cpp with full GPU acceleration. The model is available at `huggingface.co/LGAI-EXAONE/EXAONE-4.5-33B`.
-
-**Affected areas:** model, python, convert
-
----
-
-### [Model Support] — PR #22716: Adding support for granite multilingual embeddings R2
-
-**Merged:** 2026-06-02 | **Author:** @hansolosan
-
-**Summary:** Adds support for IBM's Granite Embedding multilingual R2 models (97M and 311M parameters), based on ModernBERT architecture. The PR configures proper tokenizer linkage and adds SwiGLU FFN support for the 97M model variant. These are state-of-the-art embedding models — the 97M model outperforms all <100M models on MMTEB leaderboard. Users can now generate high-quality multilingual embeddings with llama.cpp for retrieval and RAG pipelines.
-
-**Affected areas:** model (ModernBERT), tokenizer, python
+**Affected areas:** Backend (Metal), macOS
 
 ---
 
@@ -97,19 +35,39 @@
 
 **Merged:** 2026-05-28 | **Author:** @ngxson
 
-**Summary:** Fixes an incorrect RMS normalization epsilon value in the Gemma 4 audio/vision/multimodal GGUF conversion code. The epsilon was hard-coded to 1e-5 instead of the correct 1e-6 used by all Gemma 4 models (text, vision, and audio). This bug affected output quality for Gemma 4 users, particularly for audio inference where the incorrect epsilon could cause subtle numerical differences. Users should re-convert their Gemma 4 models to benefit from this fix.
+**Summary:** Fixes a critical correctness bug in the Gemma 4 audio model GGUF conversion. The RMS normalization epsilon was hardcoded to 1e-5 during conversion, but the official model config uses 1e-6. This affects all Gemma 4 models (text/vision/audio) — users running Gemma 4 GGUFs may have experienced subtle quality degradation. Re-converting with the fixed epsilon will improve output quality. Only affects newly converted GGUFs; pre-existing GGUFs need re-conversion.
 
-**Affected areas:** python, convert
+**Affected areas:** Model Support (Gemma 4), Python conversion scripts
 
 ---
 
-### [Bug Fix] — PR #23899: vocab: add normalizer.lowercase support to WPM
+### [Backend] — PR #23834: ggml-webgpu: FlashAttention refactor + standardize quantization support
 
-**Merged:** 2026-06-01 | **Author:** @o7si
+**Merged:** 2026-06-04 | **Author:** @reeselevine
 
-**Summary:** Fixes the WordPiece Model (WPM) tokenizer to respect the `tokenizer.ggml.normalizer.lowercase` setting instead of always lowercasing input. Previously, models using WPM tokenizers with case-sensitive normalizers were incorrectly lowercasing all text, potentially degrading performance for case-sensitive tasks. This brings WPM tokenizer behavior in line with transformers for better compatibility.
+**Summary:** Major refactor of the WebGPU FlashAttention implementation that merges three separate code paths into a cleaner architecture. The key user-facing improvement is that quantized KV-cache formats (q4_0, q8_0) now work in the WebGPU tile path used in browsers for long sequences. Additionally, K and V cache formats can now be independently configured (e.g., f16 for K and q8_0 for V). This enables WebGPU users to run larger context sizes in-browser with reduced memory usage through KV-cache quantization. Safari users are unaffected (subgroups not supported).
 
-**Affected areas:** tokenizer, vocab
+**Affected areas:** Backend (WebGPU), Quantization
+
+---
+
+### [Performance] — PR #22754: ggml-cpu: extend RVV quantization vec dot to higher VLENs
+
+**Merged:** 2026-06-04 | **Author:** @rehan-10xengineer
+
+**Summary:** Adds RISC-V Vector (RVV) implementations for quantized vector dot product kernels at 512-bit and 1024-bit vector lengths. Covers 11 quantization types including q3_K, q6_K, IQ1, IQ2, IQ3, IQ4, and TQ1. Each VLEN now has a dedicated function (e.g., `ggml_vec_dot_tq1_0_q8_K_vl512`), enabling RISC-V CPUs with wider vector units to achieve better inference performance. Tested via QEMU. RISC-V hardware users with VLEN > 256 will see improved throughput for quantized models.
+
+**Affected areas:** Backend (CPU/RVV), Quantization
+
+---
+
+### [Model Support] — PR #22716: Adding support for the granite multilingual embeddings R2
+
+**Merged:** 2026-06-02 | **Author:** @hansolosan
+
+**Summary:** Adds support for IBM's Granite Embedding R2 multilingual models (97M and 311M parameters), based on the ModernBERT architecture. The 97M model uses SiLU/SwiGLU activation instead of the standard GeGLU. These embedding models achieve top MMTEB leaderboard scores under 100M parameters — 8 points ahead of the next competitor. Supports tokenizer linking and proper hash matching. Users can now convert and run these high-quality multilingual embedding models for retrieval and RAG workflows.
+
+**Affected areas:** Model Support (ModernBERT/Granite), Python scripts
 
 ---
 
@@ -117,302 +75,262 @@
 
 **Merged:** 2026-06-03 | **Author:** @allozaur
 
-**Summary:** Adds Mermaid diagram rendering to the built-in llama-server web UI. Code blocks annotated with ` ```mermaid ` are now rendered as interactive SVG diagrams client-side. Features include zoom/pan support via a dialog preview and SVG download capability. The mermaid library is lazy-loaded only when diagrams are present, so conversations without diagrams incur zero overhead. This is a UI-only change with no backend modifications.
+**Summary:** Adds Mermaid diagram rendering support to the built-in llama-server web UI. Code blocks annotated with ` ```mermaid ` are now rendered as interactive SVG diagrams with zoom, pan, and download capabilities. Mermaid is lazy-loaded — conversations without diagrams pay no performance cost. This enhances the chat UI for users working with architecture, flowchart, and diagram generation tasks, making the output instantly visual rather than raw code.
 
-**Affected areas:** server/ui, examples
+**Affected areas:** Server/API (UI), Documentation
+
+---
+
+### [CLI/Tooling] — PR #24073: tests : refactor test-save-load-state to accept token input
+
+**Merged:** 2026-06-04 | **Author:** @ggerganov
+
+**Summary:** Refactors the save/load state test to accept raw token IDs instead of prompt strings. When no prompt is provided, it generates random tokens. This enables save/load state testing against models that lack a tokenizer, improving test coverage for embedding-only or custom models. No user-facing impact for inference workflows.
+
+**Affected areas:** CLI/Tooling (testing)
 
 ---
 
 ## 🖥️ Run Command Suggestions
 
-### Model: Qwen 3.6 35B A3B MTP | Setup: 1× RTX 3090 (24GB)
+### Model: Qwen 3.6 35B A3B MTP | Setup: 1× RTX 3090
 
-> **PR #23198: MTP prompt decode perf** — avoids unnecessary logits copy during MTP prompt processing for faster prefill
-
-```bash
-# Download Qwen 3.6 35B A3B MTP (Q4_K_M recommended for 24GB)
-huggingface-cli download Qwen/Qwen3.6-35B-A3B-MTP-GGUF qwen3.6-35b-a3b-mtp-q4_k_m.gguf --local-dir ./models
-
-./llama-cli \
-  --model ./models/qwen3.6-35b-a3b-mtp-q4_k_m.gguf \
-  --n-gpu-layers 999 \
-  --ctx-size 32768 \
-  --flash-attn \
-  --threads 16 \
-  --temp 0.7 \
-  --repeat-penalty 1.1 \
-  --top-p 0.9 \
-  --top-k 40 \
-  -p "Explain the theory of relativity in simple terms."
-```
-
----
-
-### Model: Qwen 3.6 35B A3B MTP | Setup: 2× RTX 3090 (48GB)
-
-> **PR #23198: MTP prompt decode perf** — avoids unnecessary logits copy during MTP prompt processing for faster prefill
+> **PR #23834: WebGPU FlashAttention refactor** — Enables quantized KV-cache on WebGPU for long-context browser inference
+> **PR #22754: RVV quantization vec dot** — RISC-V CPU optimization; not applicable to NVIDIA GPU setups
 
 ```bash
-# Download Qwen 3.6 35B A3B MTP (Q8_0 or IQ4_XS for 2×3090)
-huggingface-cli download Qwen/Qwen3.6-35B-A3B-MTP-GGUF qwen3.6-35b-a3b-mtp-q8_0.gguf --local-dir ./models
+# Download the model (if needed)
+huggingface-cli download bartowski/Qwen3.6-35B-A3B-GGUF Qwen3.6-35B-A3B-Q4_K_M.gguf --local-dir ./models
 
+# Run with llama.cpp
 ./llama-cli \
-  --model ./models/qwen3.6-35b-a3b-mtp-q8_0.gguf \
-  --n-gpu-layers 999 \
-  --ctx-size 65536 \
-  --flash-attn \
-  --split-mode layer \
-  --tensor-split 12,12 \
-  --threads 16 \
-  --temp 0.7 \
-  --repeat-penalty 1.1 \
-  --top-p 0.9 \
-  --top-k 40 \
-  -p "Explain the theory of relativity in simple terms."
-```
-
----
-
-### Model: Qwen 3.6 35B A3B MTP | Setup: 2× RTX 5060 Ti (32GB)
-
-> **PR #23198: MTP prompt decode perf** — avoids unnecessary logits copy during MTP prompt processing for faster prefill
-
-```bash
-# Download Qwen 3.6 35B A3B MTP (Q4_K_M for 32GB dual)
-huggingface-cli download Qwen/Qwen3.6-35B-A3B-MTP-GGUF qwen3.6-35b-a3b-mtp-q4_k_m.gguf --local-dir ./models
-
-./llama-cli \
-  --model ./models/qwen3.6-35b-a3b-mtp-q4_k_m.gguf \
-  --n-gpu-layers 999 \
-  --ctx-size 32768 \
-  --flash-attn \
-  --split-mode layer \
-  --tensor-split 8,8 \
-  --threads 16 \
-  --temp 0.7 \
-  --repeat-penalty 1.1 \
-  --top-p 0.9 \
-  --top-k 40 \
-  -p "Explain the theory of relativity in simple terms."
-```
-
----
-
-### Model: Qwen 3.6 27B MTP | Setup: 1× RTX 3090 (24GB)
-
-> **PR #23198: MTP prompt decode perf** — avoids unnecessary logits copy during MTP prompt processing for faster prefill
-
-```bash
-# Download Qwen 3.6 27B MTP (Q4_K_M recommended)
-huggingface-cli download Qwen/Qwen3.6-27B-MTP-GGUF qwen3.6-27b-mtp-q4_k_m.gguf --local-dir ./models
-
-./llama-cli \
-  --model ./models/qwen3.6-27b-mtp-q4_k_m.gguf \
-  --n-gpu-layers 999 \
-  --ctx-size 32768 \
-  --flash-attn \
-  --threads 16 \
-  --temp 0.7 \
-  --repeat-penalty 1.1 \
-  --top-p 0.9 \
-  --top-k 40 \
-  -p "Write a Python script to analyze sentiment from a CSV file."
-```
-
----
-
-### Model: Qwen 3.6 27B MTP | Setup: 2× RTX 3090 (48GB)
-
-> **PR #23198: MTP prompt decode perf** — avoids unnecessary logits copy during MTP prompt processing for faster prefill
-
-```bash
-# Download Qwen 3.6 27B MTP (Q8_0 or higher quality)
-huggingface-cli download Qwen/Qwen3.6-27B-MTP-GGUF qwen3.6-27b-mtp-q8_0.gguf --local-dir ./models
-
-./llama-cli \
-  --model ./models/qwen3.6-27b-mtp-q8_0.gguf \
-  --n-gpu-layers 999 \
-  --ctx-size 65536 \
-  --flash-attn \
-  --split-mode layer \
-  --tensor-split 12,12 \
-  --threads 16 \
-  --temp 0.7 \
-  --repeat-penalty 1.1 \
-  --top-p 0.9 \
-  --top-k 40 \
-  -p "Write a Python script to analyze sentiment from a CSV file."
-```
-
----
-
-### Model: Qwen 3.6 27B MTP | Setup: 2× RTX 5060 Ti (32GB)
-
-> **PR #23198: MTP prompt decode perf** — avoids unnecessary logits copy during MTP prompt processing for faster prefill
-
-```bash
-# Download Qwen 3.6 27B MTP (Q4_K_M for 32GB dual)
-huggingface-cli download Qwen/Qwen3.6-27B-MTP-GGUF qwen3.6-27b-mtp-q4_k_m.gguf --local-dir ./models
-
-./llama-cli \
-  --model ./models/qwen3.6-27b-mtp-q4_k_m.gguf \
-  --n-gpu-layers 999 \
-  --ctx-size 32768 \
-  --flash-attn \
-  --split-mode layer \
-  --tensor-split 8,8 \
-  --threads 16 \
-  --temp 0.7 \
-  --repeat-penalty 1.1 \
-  --top-p 0.9 \
-  --top-k 40 \
-  -p "Write a Python script to analyze sentiment from a CSV file."
-```
-
----
-
-### Model: Gemma 4 12B | Setup: 1× RTX 3090 (24GB)
-
-> **PR #23641 + PR #23376: Vulkan lock contention fixes** — improves multi-threaded Vulkan inference performance and reduces startup stalls
-
-```bash
-# Download Gemma 4 12B (Q4_K_M or Q6_K for 24GB)
-huggingface-cli download google/gemma-4-12b-it-GGUF gemma-4-12b-it-q4_k_m.gguf --local-dir ./models
-
-./llama-cli \
-  --model ./models/gemma-4-12b-it-q4_k_m.gguf \
+  --model ./models/Qwen3.6-35B-A3B-Q4_K_M.gguf \
   --n-gpu-layers 999 \
   --ctx-size 8192 \
   --flash-attn \
-  --threads 16 \
+  --threads 8 \
   --temp 0.7 \
   --repeat-penalty 1.1 \
   --top-p 0.9 \
   --top-k 40 \
-  -p "What are the key differences between Gemma 4 and Gemma 3?"
+  -p "Your prompt here"
 ```
 
----
-
-### Model: Gemma 4 12B | Setup: 2× RTX 3090 (48GB)
-
-> **PR #23641 + PR #23376: Vulkan lock contention fixes** — improves multi-threaded Vulkan inference performance and reduces startup stalls
+### Model: Qwen 3.6 35B A3B MTP | Setup: 2× RTX 3090
 
 ```bash
-# Download Gemma 4 12B (Q8_0 or F16 for dual 3090)
-huggingface-cli download google/gemma-4-12b-it-GGUF gemma-4-12b-it-q8_0.gguf --local-dir ./models
+huggingface-cli download bartowski/Qwen3.6-35B-A3B-GGUF Qwen3.6-35B-A3B-Q4_K_M.gguf --local-dir ./models
 
 ./llama-cli \
-  --model ./models/gemma-4-12b-it-q8_0.gguf \
+  --model ./models/Qwen3.6-35B-A3B-Q4_K_M.gguf \
+  --n-gpu-layers 999 \
+  --ctx-size 32768 \
+  --flash-attn \
+  --split-mode layer \
+  --tensor-split 24,24 \
+  --threads 8 \
+  --temp 0.7 \
+  --repeat-penalty 1.1 \
+  --top-p 0.9 \
+  --top-k 40 \
+  -p "Your prompt here"
+```
+
+### Model: Qwen 3.6 35B A3B MTP | Setup: 2× RTX 5060 Ti
+
+```bash
+huggingface-cli download bartowski/Qwen3.6-35B-A3B-GGUF Qwen3.6-35B-A3B-Q4_K_M.gguf --local-dir ./models
+
+./llama-cli \
+  --model ./models/Qwen3.6-35B-A3B-Q4_K_M.gguf \
   --n-gpu-layers 999 \
   --ctx-size 16384 \
   --flash-attn \
   --split-mode layer \
-  --tensor-split 12,12 \
-  --threads 16 \
+  --tensor-split 16,16 \
+  --threads 8 \
   --temp 0.7 \
   --repeat-penalty 1.1 \
   --top-p 0.9 \
   --top-k 40 \
-  -p "What are the key differences between Gemma 4 and Gemma 3?"
+  -p "Your prompt here"
 ```
 
----
-
-### Model: Gemma 4 12B | Setup: 2× RTX 5060 Ti (32GB)
-
-> **PR #23641 + PR #23376: Vulkan lock contention fixes** — improves multi-threaded Vulkan inference performance and reduces startup stalls
+### Model: Qwen 3.6 27B MTP | Setup: 1× RTX 3090
 
 ```bash
-# Download Gemma 4 12B (Q4_K_M or Q6_K for dual 5060 Ti)
-huggingface-cli download google/gemma-4-12b-it-GGUF gemma-4-12b-it-q4_k_m.gguf --local-dir ./models
+huggingface-cli download bartowski/Qwen3.6-27B-GGUF Qwen3.6-27B-Q4_K_M.gguf --local-dir ./models
 
 ./llama-cli \
-  --model ./models/gemma-4-12b-it-q4_k_m.gguf \
+  --model ./models/Qwen3.6-27B-Q4_K_M.gguf \
   --n-gpu-layers 999 \
-  --ctx-size 8192 \
+  --ctx-size 16384 \
+  --flash-attn \
+  --threads 8 \
+  --temp 0.7 \
+  --repeat-penalty 1.1 \
+  --top-p 0.9 \
+  --top-k 40 \
+  -p "Your prompt here"
+```
+
+### Model: Qwen 3.6 27B MTP | Setup: 2× RTX 3090
+
+```bash
+huggingface-cli download bartowski/Qwen3.6-27B-GGUF Qwen3.6-27B-Q4_K_M.gguf --local-dir ./models
+
+./llama-cli \
+  --model ./models/Qwen3.6-27B-Q4_K_M.gguf \
+  --n-gpu-layers 999 \
+  --ctx-size 65536 \
   --flash-attn \
   --split-mode layer \
-  --tensor-split 8,8 \
-  --threads 16 \
+  --tensor-split 24,24 \
+  --threads 8 \
   --temp 0.7 \
   --repeat-penalty 1.1 \
   --top-p 0.9 \
   --top-k 40 \
-  -p "What are the key differences between Gemma 4 and Gemma 3?"
+  -p "Your prompt here"
 ```
 
----
-
-### Model: Gemma 4 26B A4B | Setup: 1× RTX 3090 (24GB)
-
-> **PR #23641 + PR #23376: Vulkan lock contention fixes** — improves multi-threaded Vulkan inference performance
+### Model: Qwen 3.6 27B MTP | Setup: 2× RTX 5060 Ti
 
 ```bash
-# Download Gemma 4 26B A4B (Q4_K_M fits in 24GB)
-huggingface-cli download google/gemma-4-26b-A4B-it-GGUF gemma-4-26b-a4b-it-q4_k_m.gguf --local-dir ./models
+huggingface-cli download bartowski/Qwen3.6-27B-GGUF Qwen3.6-27B-Q4_K_M.gguf --local-dir ./models
 
 ./llama-cli \
-  --model ./models/gemma-4-26b-a4b-it-q4_k_m.gguf \
+  --model ./models/Qwen3.6-27B-Q4_K_M.gguf \
+  --n-gpu-layers 999 \
+  --ctx-size 32768 \
+  --flash-attn \
+  --split-mode layer \
+  --tensor-split 16,16 \
+  --threads 8 \
+  --temp 0.7 \
+  --repeat-penalty 1.1 \
+  --top-p 0.9 \
+  --top-k 40 \
+  -p "Your prompt here"
+```
+
+### Model: Gemma 4 12B | Setup: 1× RTX 3090
+
+> **PR #23815: Fix gemma 4 audio rms norm eps** — Important correctness fix for all Gemma 4 models (1e-6 eps vs previous incorrect 1e-5). Re-convert your GGUFs for best quality.
+> **PR #24032: Mermaid Diagrams in chat** — If using llama-server web UI, mermaid code blocks render as SVG diagrams automatically.
+
+```bash
+huggingface-cli download bartowski/gemma-4-12b-it-GGUF gemma-4-12b-it-Q4_K_M.gguf --local-dir ./models
+
+./llama-cli \
+  --model ./models/gemma-4-12b-it-Q4_K_M.gguf \
+  --n-gpu-layers 999 \
+  --ctx-size 32768 \
+  --flash-attn \
+  --threads 8 \
+  --temp 0.7 \
+  --repeat-penalty 1.1 \
+  --top-p 0.9 \
+  --top-k 40 \
+  -p "Your prompt here"
+```
+
+### Model: Gemma 4 12B | Setup: 2× RTX 3090
+
+```bash
+huggingface-cli download bartowski/gemma-4-12b-it-GGUF gemma-4-12b-it-Q4_K_M.gguf --local-dir ./models
+
+./llama-cli \
+  --model ./models/gemma-4-12b-it-Q4_K_M.gguf \
+  --n-gpu-layers 999 \
+  --ctx-size 32768 \
+  --flash-attn \
+  --split-mode layer \
+  --tensor-split 24,24 \
+  --threads 8 \
+  --temp 0.7 \
+  --repeat-penalty 1.1 \
+  --top-p 0.9 \
+  --top-k 40 \
+  -p "Your prompt here"
+```
+
+### Model: Gemma 4 12B | Setup: 2× RTX 5060 Ti
+
+```bash
+huggingface-cli download bartowski/gemma-4-12b-it-GGUF gemma-4-12b-it-Q4_K_M.gguf --local-dir ./models
+
+./llama-cli \
+  --model ./models/gemma-4-12b-it-Q4_K_M.gguf \
+  --n-gpu-layers 999 \
+  --ctx-size 32768 \
+  --flash-attn \
+  --split-mode layer \
+  --tensor-split 16,16 \
+  --threads 8 \
+  --temp 0.7 \
+  --repeat-penalty 1.1 \
+  --top-p 0.9 \
+  --top-k 40 \
+  -p "Your prompt here"
+```
+
+### Model: Gemma 4 26B A4B | Setup: 1× RTX 3090
+
+```bash
+huggingface-cli download bartowski/gemma-4-26b-a4b-it-GGUF gemma-4-26b-a4b-it-Q4_K_M.gguf --local-dir ./models
+
+./llama-cli \
+  --model ./models/gemma-4-26b-a4b-it-Q4_K_M.gguf \
   --n-gpu-layers 999 \
   --ctx-size 8192 \
   --flash-attn \
-  --threads 16 \
+  --threads 8 \
   --temp 0.7 \
   --repeat-penalty 1.1 \
   --top-p 0.9 \
   --top-k 40 \
-  -p "Explain the advantages of mixture-of-experts architectures like Gemma 4."
+  -p "Your prompt here"
 ```
 
----
-
-### Model: Gemma 4 26B A4B | Setup: 2× RTX 3090 (48GB)
-
-> **PR #23641 + PR #23376: Vulkan lock contention fixes** — improves multi-threaded Vulkan inference performance
+### Model: Gemma 4 26B A4B | Setup: 2× RTX 3090
 
 ```bash
-# Download Gemma 4 26B A4B (Q8_0 or higher quality)
-huggingface-cli download google/gemma-4-26b-A4B-it-GGUF gemma-4-26b-a4b-it-q8_0.gguf --local-dir ./models
+huggingface-cli download bartowski/gemma-4-26b-a4b-it-GGUF gemma-4-26b-a4b-it-Q4_K_M.gguf --local-dir ./models
 
 ./llama-cli \
-  --model ./models/gemma-4-26b-a4b-it-q8_0.gguf \
+  --model ./models/gemma-4-26b-a4b-it-Q4_K_M.gguf \
+  --n-gpu-layers 999 \
+  --ctx-size 32768 \
+  --flash-attn \
+  --split-mode layer \
+  --tensor-split 24,24 \
+  --threads 8 \
+  --temp 0.7 \
+  --repeat-penalty 1.1 \
+  --top-p 0.9 \
+  --top-k 40 \
+  -p "Your prompt here"
+```
+
+### Model: Gemma 4 26B A4B | Setup: 2× RTX 5060 Ti
+
+```bash
+huggingface-cli download bartowski/gemma-4-26b-a4b-it-GGUF gemma-4-26b-a4b-it-Q4_K_M.gguf --local-dir ./models
+
+./llama-cli \
+  --model ./models/gemma-4-26b-a4b-it-Q4_K_M.gguf \
   --n-gpu-layers 999 \
   --ctx-size 16384 \
   --flash-attn \
   --split-mode layer \
-  --tensor-split 12,12 \
-  --threads 16 \
+  --tensor-split 16,16 \
+  --threads 8 \
   --temp 0.7 \
   --repeat-penalty 1.1 \
   --top-p 0.9 \
   --top-k 40 \
-  -p "Explain the advantages of mixture-of-experts architectures like Gemma 4."
-```
-
----
-
-### Model: Gemma 4 26B A4B | Setup: 2× RTX 5060 Ti (32GB)
-
-> **PR #23641 + PR #23376: Vulkan lock contention fixes** — improves multi-threaded Vulkan inference performance
-
-```bash
-# Download Gemma 4 26B A4B (Q4_K_M fits in 32GB dual)
-huggingface-cli download google/gemma-4-26b-A4B-it-GGUF gemma-4-26b-a4b-it-q4_k_m.gguf --local-dir ./models
-
-./llama-cli \
-  --model ./models/gemma-4-26b-a4b-it-q4_k_m.gguf \
-  --n-gpu-layers 999 \
-  --ctx-size 8192 \
-  --flash-attn \
-  --split-mode layer \
-  --tensor-split 8,8 \
-  --threads 16 \
-  --temp 0.7 \
-  --repeat-penalty 1.1 \
-  --top-p 0.9 \
-  --top-k 40 \
-  -p "Explain the advantages of mixture-of-experts architectures like Gemma 4."
+  -p "Your prompt here"
 ```
 
 ---
@@ -428,4 +346,13 @@ huggingface-cli download google/gemma-4-26b-A4B-it-GGUF gemma-4-26b-a4b-it-q4_k_
 
 ---
 
-*Report generated 2026-06-04T07:01:43.213Z | Next update: tomorrow*
+## 🔮 Looking Ahead
+
+- **WebGPU users** can now use quantized KV-caches in browser-based inference — exciting for in-browser RAG and long-context apps
+- **Gemma 4 users** should re-convert GGUFs to pick up the RMS norm eps fix (1e-6) for correct audio/text outputs
+- **macOS users** will notice faster app exit times with the reduced Metal heartbeat interval
+- **Granite Embedding R2** models are now supported — excellent multilingual embedding options for RAG pipelines
+
+---
+
+*Report generated 2026-06-04T07:15:24.994Z | Next update: tomorrow*

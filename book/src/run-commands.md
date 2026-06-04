@@ -18,7 +18,7 @@
 ## Commands
 
 > Last updated: 2026-06-04
-> Based on: PR #24074 (Metal heartbeat), PR #23982 (performance), and others
+> Based on: PR #24074 (Metal heartbeat), PR #23834 (WebGPU FlashAttn), PR #23815 (Gemma 4 norm fix)
 
 ### Qwen 3.6 35B A3B MTP | 1× RTX 3090 (24 GB)
 
@@ -222,6 +222,12 @@ huggingface-cli download bartowski/gemma-4-26b-a4b-it-GGUF gemma-4-26b-a4b-it-Q4
 
 | Date | Changes |
 |------|---------|
+| 2026-06-04 | **PR #23834** WebGPU FlashAttention refactor — quantized KV-cache now supported in browser WebGPU tile path. K/V cache formats can be independent. No change to CUDA CLI flags. |
+| 2026-06-04 | **PR #24074** Metal backend heartbeat reduced 500ms→5ms — macOS exit time improved. No change to CUDA CLI flags. |
+| 2026-06-04 | **PR #23815** Gemma 4 audio RMS norm eps fixed from 1e-5 to 1e-6 — re-convert GGUFs for correct quality. |
+| 2026-06-04 | **PR #22754** RVV quantization vec dot extended to 512/1024-bit VLENs — RISC-V CPU optimization only. |
+| 2026-06-04 | **PR #22716** Added Granite Embedding R2 (97M/311M) ModernBERT model support. |
+| 2026-06-04 | **PR #24032** Mermaid diagram rendering in server web UI. |
 | 2026-06-04 | Initial commands based on current llama.cpp build |
 
 ---
