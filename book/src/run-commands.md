@@ -424,6 +424,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 | Date | Changes |
 |------|---------|
+| 2026-06-04 | Reviewed — no changes needed. Today's PRs (Gemma 4 unified, Granite Embeddings R2, iGPU dedup, Turing MMVQ tuning, AMD MFMA dispatch, Hexagon refresh) are backend/model additions that don't change run command flags or recommendations. |
 | 2026-06-04 | Initial commands based on current llama.cpp build. Sourced from Unsloth GGUF repos. Added interactive quant selector (Q4_K_M / Q5_K_M / Q6_K). |
 
 ---
