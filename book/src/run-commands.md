@@ -12,10 +12,10 @@ Select quantization to see VRAM usage and recommended context sizes for each pai
 
 | Model | Size | 1× RTX 3090 <br><small>22 GB usable</small> | 2× RTX 3090 <br><small>44 GB usable</small> | 2× RTX 5060 Ti <br><small>28 GB usable</small> |
 |-------|------|-------------|-------------|---------------|
-| Qwen 3.6 35B A3B MTP | <span id="size-qwen330b">17.3 GB</span> | <span id="cell-qwen330b-1x3090">✅ 4.7 GB free<br><small>5K ctx</small></span> | <span id="cell-qwen330b-2x3090">✅ 26.7 GB free<br><small>40K ctx</small></span> | <span id="cell-qwen330b-2x5060">✅ 10.7 GB free<br><small>16K ctx</small></span> |
-| Qwen 3.6 27B MTP | <span id="size-qwen27b">15.9 GB</span> | <span id="cell-qwen27b-1x3090">✅ 6.1 GB free<br><small>9K ctx</small></span> | <span id="cell-qwen27b-2x3090">✅ 28.1 GB free<br><small>42K ctx</small></span> | <span id="cell-qwen27b-2x5060">✅ 12.1 GB free<br><small>18K ctx</small></span> |
-| Gemma 3 12B | <span id="size-gemma12b">7.5 GB</span> | <span id="cell-gemma12b-1x3090">✅ 14.5 GB free<br><small>21K ctx</small></span> | <span id="cell-gemma12b-2x3090">✅ 36.5 GB free<br><small>131K ctx</small></span> | <span id="cell-gemma12b-2x5060">✅ 20.5 GB free<br><small>30K ctx</small></span> |
-| Gemma 3 27B | <span id="size-gemma27b">16.0 GB</span> | <span id="cell-gemma27b-1x3090">✅ 6.0 GB free<br><small>9K ctx</small></span> | <span id="cell-gemma27b-2x3090">✅ 28.0 GB free<br><small>42K ctx</small></span> | <span id="cell-gemma27b-2x5060">✅ 12.0 GB free<br><small>18K ctx</small></span> |
+| Qwen 3.6 35B A3B MTP | <span id="size-qwen35b">—</span> | <span id="cell-qwen35b-1x3090">—</span> | <span id="cell-qwen35b-2x3090">—</span> | <span id="cell-qwen35b-2x5060">—</span> |
+| Qwen 3.6 27B MTP | <span id="size-qwen27b">—</span> | <span id="cell-qwen27b-1x3090">—</span> | <span id="cell-qwen27b-2x3090">—</span> | <span id="cell-qwen27b-2x5060">—</span> |
+| Gemma 3 12B | <span id="size-gemma12b">—</span> | <span id="cell-gemma12b-1x3090">—</span> | <span id="cell-gemma12b-2x3090">—</span> | <span id="cell-gemma12b-2x5060">—</span> |
+| Gemma 3 27B | <span id="size-gemma27b">—</span> | <span id="cell-gemma27b-1x3090">—</span> | <span id="cell-gemma27b-2x3090">—</span> | <span id="cell-gemma27b-2x5060">—</span> |
 
 <span id="pair-count">12</span> pairs · <span id="pass-count">0</span> meet 64K target · <span id="fail-count">12</span> below 64K or won't fit
 
@@ -27,66 +27,20 @@ Select quantization to see VRAM usage and recommended context sizes for each pai
 
 ## Commands
 
-### Qwen 3.6 35B A3B MTP <span id="qwen330b-1x3090"></span>
+### Qwen 3.6 35B A3B MTP <span id="qwen35b-1x3090"></span>
+
+> **Q4_K_M (22.66 GB) does NOT fit on 1× RTX 3090 (22 GB usable).** Use 2×3090 or 2×5060Ti.
 
 <div class="cmd-block" data-quant="Q4_K_M">
 
-#### 1× RTX 3090 — Q4_K_M
+#### 2× RTX 3090 — Q4_K_M
 ```bash
-# Download (or use -hf flag with llama-cli)
-huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q4_K_M.gguf --local-dir ./models
+huggingface-cli download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-UD-Q4_K_M.gguf --local-dir ./models
 
 ./llama-cli \
-  -hf unsloth/Qwen3-30B-A3B-GGUF:UD-Q4_K_XL \
+  -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_M \
   --n-gpu-layers 999 \
-  --ctx-size 4096 \
-  --flash-attn \
-  --threads 8 \
-  --temp 0.7 --repeat-penalty 1.1 --top-p 0.9 --top-k 40 \
-  -p "Your prompt here"
-```
-
-</div>
-<div class="cmd-block" data-quant="Q5_K_M">
-
-#### 1× RTX 3090 — Q5_K_M
-```bash
-huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q5_K_M.gguf --local-dir ./models
-
-./llama-cli \
-  -hf unsloth/Qwen3-30B-A3B-GGUF:Q5_K_M \
-  --n-gpu-layers 999 \
-  --ctx-size 2048 \
-  --flash-attn \
-  --threads 8 \
-  --temp 0.7 --repeat-penalty 1.1 --top-p 0.9 --top-k 40 \
-  -p "Your prompt here"
-```
-
-</div>
-<div class="cmd-block" data-quant="Q6_K">
-
-#### 1× RTX 3090 — Q6_K (does not fit — model 23.4 GB > 22 GB usable)
-```bash
-# Q6_K does not fit on a single 3090. Use Q4_K_M or Q5_K_M instead.
-# With 2×3090 or 2×5060Ti it fits.
-```
-
-</div>
-
----
-
-#### 2× RTX 3090
-
-<div class="cmd-block" data-quant="Q4_K_M">
-
-```bash
-huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q4_K_M.gguf --local-dir ./models
-
-./llama-cli \
-  -hf unsloth/Qwen3-30B-A3B-GGUF:UD-Q4_K_XL \
-  --n-gpu-layers 999 \
-  --ctx-size 40960 \
+  --ctx-size 131072 \
   --flash-attn \
   --split-mode layer --tensor-split 24,24 \
   --threads 8 \
@@ -94,55 +48,12 @@ huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q4_K_M.gguf --
   -p "Your prompt here"
 ```
 
-</div>
-<div class="cmd-block" data-quant="Q5_K_M">
-
+#### 2× RTX 5060 Ti — Q4_K_M
 ```bash
-huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q5_K_M.gguf --local-dir ./models
-
 ./llama-cli \
-  -hf unsloth/Qwen3-30B-A3B-GGUF:Q5_K_M \
+  -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_M \
   --n-gpu-layers 999 \
-  --ctx-size 35840 \
-  --flash-attn \
-  --split-mode layer --tensor-split 24,24 \
-  --threads 8 \
-  --temp 0.7 --repeat-penalty 1.1 --top-p 0.9 --top-k 40 \
-  -p "Your prompt here"
-```
-
-</div>
-<div class="cmd-block" data-quant="Q6_K">
-
-```bash
-huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q6_K.gguf --local-dir ./models
-
-./llama-cli \
-  -hf unsloth/Qwen3-30B-A3B-GGUF:Q6_K \
-  --n-gpu-layers 999 \
-  --ctx-size 30720 \
-  --flash-attn \
-  --split-mode layer --tensor-split 24,24 \
-  --threads 8 \
-  --temp 0.7 --repeat-penalty 1.1 --top-p 0.9 --top-k 40 \
-  -p "Your prompt here"
-```
-
-</div>
-
----
-
-#### 2× RTX 5060 Ti
-
-<div class="cmd-block" data-quant="Q4_K_M">
-
-```bash
-huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q4_K_M.gguf --local-dir ./models
-
-./llama-cli \
-  -hf unsloth/Qwen3-30B-A3B-GGUF:UD-Q4_K_XL \
-  --n-gpu-layers 999 \
-  --ctx-size 16384 \
+  --ctx-size 32768 \
   --flash-attn \
   --split-mode layer --tensor-split 16,16 \
   --threads 8 \
@@ -153,15 +64,18 @@ huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q4_K_M.gguf --
 </div>
 <div class="cmd-block" data-quant="Q5_K_M">
 
+> **Q5_K_M (27.09 GB) does NOT fit on 1×3090 or 2×5060Ti.**
+
+#### 2× RTX 3090 — Q5_K_M
 ```bash
-huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q5_K_M.gguf --local-dir ./models
+huggingface-cli download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-UD-Q5_K_M.gguf --local-dir ./models
 
 ./llama-cli \
-  -hf unsloth/Qwen3-30B-A3B-GGUF:Q5_K_M \
+  -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q5_K_M \
   --n-gpu-layers 999 \
-  --ctx-size 11264 \
+  --ctx-size 65536 \
   --flash-attn \
-  --split-mode layer --tensor-split 16,16 \
+  --split-mode layer --tensor-split 24,24 \
   --threads 8 \
   --temp 0.7 --repeat-penalty 1.1 --top-p 0.9 --top-k 40 \
   -p "Your prompt here"
@@ -170,15 +84,18 @@ huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q5_K_M.gguf --
 </div>
 <div class="cmd-block" data-quant="Q6_K">
 
+> **Q6_K (30.01 GB) does NOT fit on 1×3090 or 2×5060Ti.**
+
+#### 2× RTX 3090 — Q6_K
 ```bash
-huggingface-cli download unsloth/Qwen3-30B-A3B-GGUF Qwen3-30B-A3B-Q6_K.gguf --local-dir ./models
+huggingface-cli download unsloth/Qwen3.6-35B-A3B-MTP-GGUF Qwen3.6-35B-A3B-UD-Q6_K.gguf --local-dir ./models
 
 ./llama-cli \
-  -hf unsloth/Qwen3-30B-A3B-GGUF:Q6_K \
+  -hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q6_K \
   --n-gpu-layers 999 \
-  --ctx-size 6656 \
+  --ctx-size 32768 \
   --flash-attn \
-  --split-mode layer --tensor-split 16,16 \
+  --split-mode layer --tensor-split 24,24 \
   --threads 8 \
   --temp 0.7 --repeat-penalty 1.1 --top-p 0.9 --top-k 40 \
   -p "Your prompt here"

@@ -40,15 +40,15 @@ export const MODELS: ModelEntry[] = [
   {
     name: "Qwen 3.6 35B A3B MTP",
     family: "qwen",
-    paramSize: "30B",
+    paramSize: "35B",
     spec: "MoE (3B active) + MTP",
-    hfRepo: "unsloth/Qwen3-30B-A3B-GGUF",
-    contextWindow: 40960,
-    architecture: "qwen3moe",
+    hfRepo: "unsloth/Qwen3.6-35B-A3B-MTP-GGUF",
+    contextWindow: 262144,
+    architecture: "qwen35moe",
     quants: {
-      Q4_K_M: { quant: "Q4_K_M", sizeGB: 17.3, filename: "Qwen3-30B-A3B-Q4_K_M.gguf" },
-      Q5_K_M: { quant: "Q5_K_M", sizeGB: 20.2, filename: "Qwen3-30B-A3B-Q5_K_M.gguf" },
-      Q6_K:   { quant: "Q6_K",   sizeGB: 23.4, filename: "Qwen3-30B-A3B-Q6_K.gguf" },
+      Q4_K_M: { quant: "Q4_K_M", sizeGB: 22.66, filename: "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf" },
+      Q5_K_M: { quant: "Q5_K_M", sizeGB: 27.09, filename: "Qwen3.6-35B-A3B-UD-Q5_K_M.gguf" },
+      Q6_K:   { quant: "Q6_K",   sizeGB: 30.01, filename: "Qwen3.6-35B-A3B-UD-Q6_K.gguf" },
     },
   },
   {

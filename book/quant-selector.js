@@ -7,15 +7,15 @@
   // ── Model data (mirrors src/config.ts) ─────────────────
   const MODELS = [
     {
-      id: "qwen330b",
+      id: "qwen35b",
       name: "Qwen 3.6 35B A3B MTP",
-      hfRepo: "unsloth/Qwen3-30B-A3B-GGUF",
-      ctx: 40960,
-      arch: "qwen3moe",
+      hfRepo: "unsloth/Qwen3.6-35B-A3B-MTP-GGUF",
+      ctx: 262144,
+      arch: "qwen35moe",
       quants: {
-        Q4_K_M: { size: 17.3, fn: "Qwen3-30B-A3B-Q4_K_M.gguf" },
-        Q5_K_M: { size: 20.2, fn: "Qwen3-30B-A3B-Q5_K_M.gguf" },
-        Q6_K:   { size: 23.4, fn: "Qwen3-30B-A3B-Q6_K.gguf" },
+        Q4_K_M: { size: 22.66, fn: "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf" },
+        Q5_K_M: { size: 27.09, fn: "Qwen3.6-35B-A3B-UD-Q5_K_M.gguf" },
+        Q6_K:   { size: 30.01, fn: "Qwen3.6-35B-A3B-UD-Q6_K.gguf" },
       }
     },
     {
@@ -67,9 +67,9 @@
   // ── Helpers ────────────────────────────────────────────
   // ── Per-model KV cache memory (GB per 1K tokens) ──
   var KV_PER_1K = {
-    qwen330b:  0.12,  // 30B MoE: ~48 layers × 5120 dim
+    qwen35b:  0.14,  // 35B MoE: ~48 layers × 6144 dim
     qwen27b:   0.10,  // 27B dense
-    gemma12b:  0.06,  // 12B: ~40 layers × 3840 dim
+    gemma12b:  0.06,  // 12B
     gemma27b:  0.10,  // 27B dense
   };
 
