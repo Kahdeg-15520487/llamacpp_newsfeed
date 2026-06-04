@@ -102,25 +102,36 @@ The report must follow this exact markdown structure:
 After writing the daily report, you MUST also update the living run command reference page at \`book/src/run-commands.md\`:
 
 1. **Read** the existing file at \`book/src/run-commands.md\` using the read tool
-2. **If any of today's PRs introduce new flags, backends, or change recommended parameters:**
-   - Update the affected command blocks with new flags or changed values
-   - Add a changelog entry at the bottom with today's date and what changed
-   - Update the "Last updated" date at the top
-3. **If today's PRs don't affect run commands:** still add a "No changes" or "Reviewed — no changes needed" changelog entry so the page shows it was reviewed
-4. **Write** the updated file back using the write tool
+2. **Do NOT modify:**
+   - The \`<span id="...">\` elements (used by JS for dynamic updates)
+   - The \`quant-selector.js\` file
+   - The interactive matrix table structure
+   - The \`<div class="cmd-block" data-quant="...">\` wrapper structure
+3. **Only update inside cmd-block divs:**
+   - Update \`-hf\` flags, \`--ctx-size\`, \`--flash-attn\`, \`--tensor-split\` values if new PRs change recommendations
+   - Each quant level (Q4_K_M, Q5_K_M, Q6_K) has its own \`cmd-block\` div — update all that are affected
+4. **Changelog:** Add entry at the bottom with today's date and what changed. If no changes, add "Reviewed — no changes needed"
+5. **Write** the updated file back using the write tool
 
-This page is the canonical reference that persists across daily runs. It should always reflect the best known llama-cli commands based on the latest merged PRs.
+### Model Data Reference (Unsloth GGUF repos)
 
-## Important Notes
-- Use the write tool to save both the daily report and the updated run-commands.md — do NOT just output them in your response
-- For PRs you cannot access/fetch, note them in the summary table but skip the details
-- If no new PRs were merged in the window, generate a report stating that clearly
-- The run-commands.md page uses quant-specific \`<div class="cmd-block" data-quant="Q4_K_M">\` blocks controlled by a JS dropdown. Preserve this structure.
-- Model data sourced from Unsloth HuggingFace GGUF repos (\`-hf\` flag syntax)
+Use these exact repos and filenames when writing commands:
 
-### Model/GPU compatibility (Q4_K_M baseline):
+| Model | Repo | Q4_K_M file | Q5_K_M file | Q6_K file | Context |
+|-------|------|-------------|-------------|-----------|---------|
+${MODELS.map(m => `| ${m.name} | \`${m.hfRepo}\` | \`${m.quants.Q4_K_M.filename}\` (${m.quants.Q4_K_M.sizeGB} GB) | \`${m.quants.Q5_K_M.filename}\` (${m.quants.Q5_K_M.sizeGB} GB) | \`${m.quants.Q6_K.filename}\` (${m.quants.Q6_K.sizeGB} GB) | ${m.contextWindow.toLocaleString()} |`).join("\n")}
+
+Commands use \`-hf\` flag syntax: \`-hf REPO:QUANT\` (e.g., \`-hf unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_M\`).
+
+### GPU setups (2 GB overhead per GPU for KV cache):
+${GPU_SETUPS.map(s => `- ${s.name}: ${s.totalVramGB} GB total (${s.gpuCount}×${s.vramPerGpuGB} GB), ${s.totalVramGB - s.gpuCount * 2} GB usable`).join("\n")}
+
+### VRAM Compatibility Matrix (Q4_K_M baseline):
 
 | Model | ${GPU_SETUPS.map(s => s.name).join(" | ")} |
 |-------|${GPU_SETUPS.map(() => "-------").join("|")}|
-${MODELS.map(m => `| ${m.name} | ${GPU_SETUPS.map(s => modelFitsSetup(m, "Q4_K_M", s) ? '✅' : `❌ ${s.totalVramGB}GB`).join(" | ")} |`).join("\n")}`;
+${MODELS.map(m => `| ${m.name} | ${GPU_SETUPS.map(s => modelFitsSetup(m, "Q4_K_M", s) ? '✅' : `❌`).join(" | ")} |`).join("\n")}
+
+> ⚠️ At Q4_K_M, Qwen 35B (22.66 GB) does NOT fit on 1×3090 (22 GB usable). Only 2×3090 and 2×5060Ti.
+> At Q5_K_M (27.09 GB) and Q6_K (30.01 GB), Qwen 35B only fits on 2×3090.`;
 }
