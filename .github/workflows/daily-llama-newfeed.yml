@@ -2,9 +2,8 @@ name: Daily Llama.cpp News Feed
 
 on:
   schedule:
-    # Run daily at 08:00 UTC
     - cron: "0 8 * * *"
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
     inputs:
       lookback-days:
         description: "Days to look back for PRs"
@@ -18,7 +17,7 @@ jobs:
     timeout-minutes: 30
 
     permissions:
-      contents: write # Needed to commit the report
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -41,20 +40,21 @@ jobs:
         run: npm run pipeline
         timeout-minutes: 20
 
-      - name: Commit and push report
+      - name: Rebuild mdBook site
+        run: bash scripts/rebuild-book.sh
+
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Stage any new/modified report files
-          git add output/*.md
+          git add output/*.md book/src/*.md book/src/SUMMARY.md
 
-          # Check if there are changes to commit
           if git diff --staged --quiet; then
-            echo "No new report to commit."
+            echo "No changes to commit."
           else
             TODAY=$(date +%Y-%m-%d)
-            git commit -m "📰 Daily llama.cpp news — $TODAY"
+            git commit -m "📰 Daily llama.cpp news + site update — $TODAY"
             git push
-            echo "✅ Report committed and pushed."
+            echo "✅ Committed and pushed."
           fi

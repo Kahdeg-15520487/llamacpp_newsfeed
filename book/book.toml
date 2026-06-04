@@ -1,0 +1,19 @@
+[book]
+authors = ["pi-agent-core + DeepSeek"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Llama.cpp Daily News"
+
+[output.html]
+git-repository-url = "https://github.com/Kahdeg-15520487/llamacpp_newsfeed"
+edit-url-template = "https://github.com/Kahdeg-15520487/llamacpp_newsfeed/edit/master/output/{path}"
+site-url = "/"
+
+[output.html.search]
+enable = true
+limit-results = 20
+
+[output.html.fold]
+enable = true
+level = 1

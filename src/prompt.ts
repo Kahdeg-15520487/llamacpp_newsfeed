@@ -163,8 +163,22 @@ ${MODELS.map(m => `| ${m.name} | ${GPU_SETUPS.map(s => modelFitsSetup(m, s) ? '�
 \`\`\`
 
 ## Important Notes
-- Use the write tool to save the report — do NOT just output it in your response
+- Use the write tool to save the daily report — do NOT just output it in your response
 - For PRs you cannot access/fetch, note them in the summary table but skip the details
 - If no new PRs were merged in the window, generate a report stating that clearly
-- When suggesting commands, ensure flags are compatible with the model architecture (e.g., Qwen models need --flash-attn for long contexts)`;
+- When suggesting commands, ensure flags are compatible with the model architecture (e.g., Qwen models need --flash-attn for long contexts)
+
+### Step 6: Update the Run Command Reference
+
+After writing the daily report, you MUST also update the living run command reference page at \`book/src/run-commands.md\`:
+
+1. **Read** the existing file at \`book/src/run-commands.md\` using the read tool
+2. **If any of today's PRs introduce new flags, backends, or change recommended parameters:**
+   - Update the affected command blocks with new flags or changed values
+   - Add a changelog entry at the bottom with today's date and what changed
+   - Update the "Last updated" date at the top
+3. **If today's PRs don't affect run commands:** still add a "No changes" changelog entry so the page shows it was reviewed
+4. **Write** the updated file back using the write tool
+
+This page is the canonical reference that persists across daily runs. It should always reflect the best known llama-cli commands based on the latest merged PRs.`;
 }
