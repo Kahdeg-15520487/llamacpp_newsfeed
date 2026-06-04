@@ -9,7 +9,6 @@
     "pipeline:dry-run": "tsx src/pipeline.ts --dry-run"
   },
   "dependencies": {
-    "@earendil-works/pi-coding-agent": "latest",
     "@earendil-works/pi-agent-core": "latest"
   },
   "devDependencies": {

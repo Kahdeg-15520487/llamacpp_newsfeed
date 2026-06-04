@@ -102,8 +102,8 @@ export const DEEPSEEK_CONFIG = {
   apiKey: "DEEPSEEK_API_KEY", // resolved from env
   baseUrl: "https://api.deepseek.com/v1",
   api: "openai-completions" as const,
-  modelId: "deepseek-chat",
-  modelName: "DeepSeek V3",
+  modelId: "deepseek-v4-flash",
+  modelName: "DeepSeek V4 Flash",
   contextWindow: 131072,
   maxTokens: 8192,
   compat: {

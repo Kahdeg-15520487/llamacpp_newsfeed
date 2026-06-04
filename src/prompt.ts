@@ -66,7 +66,7 @@ For each PR, write a 2-4 sentence summary covering:
 
 For PRs that affect inference (Backend, Performance, Model Support, Quantization), generate run command suggestions. For EACH compatible model×GPU pair:
 
-${pairsList.length > 0 ? `The following ${pairsList.length} model×GPU pairs are VRAM-compatible:\n\n| Model | GPU Setup | Total VRAM |\n|-------|-----------|--------|\n${pairsList}` : 'No compatible pairs found.'}
+${compatiblePairs.length > 0 ? `The following ${compatiblePairs.length} model×GPU pairs are VRAM-compatible:\n\n| Model | GPU Setup | Total VRAM |\n|-------|-----------|--------|\n${pairsList}` : 'No compatible pairs found.'}
 
 For each relevant PR, generate at least one concrete, runnable llama.cpp CLI command per compatible pair. Commands must include:
 - Exact model GGUF filename (from HuggingFace repos)
