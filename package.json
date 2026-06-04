@@ -1,0 +1,19 @@
+{
+  "name": "llamacppghexplorer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Daily llama.cpp merged PR news feed powered by pi-agent-core + DeepSeek",
+  "type": "module",
+  "scripts": {
+    "pipeline": "tsx src/pipeline.ts",
+    "pipeline:dry-run": "tsx src/pipeline.ts --dry-run"
+  },
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "latest",
+    "@earendil-works/pi-agent-core": "latest"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
