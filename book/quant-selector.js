@@ -72,11 +72,10 @@
   function recCtx(model, quant, setup) {
     var free = freeGB(model, quant, setup);
     if (free <= 1) return { val: "—", cls: "red" };
-    if (free <= 4) return { val: formatCtx(Math.floor(free * 500)), cls: "yellow" };
-    if (free <= 10) return { val: formatCtx(Math.floor(free * 1000)), cls: "green" };
-    var ctx = Math.floor(free * 1500);
-    if (ctx > model.ctx) ctx = model.ctx;
-    return { val: formatCtx(ctx), cls: "green" };
+    if (free <= 3) return { val: formatCtx(Math.floor(free * 400)), cls: "yellow" };
+    if (free <= 8) return { val: formatCtx(Math.floor(free * 800)), cls: "green" };
+    // Plenty of VRAM — use native context window
+    return { val: formatCtx(model.ctx), cls: "green" };
   }
 
   function formatCtx(n) {

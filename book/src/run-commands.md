@@ -10,7 +10,7 @@
 
 Select quantization to see VRAM usage and recommended context sizes for each pairing.
 
-| Model | <span id="size-qwen330b">17.3 GB</span> | 1× RTX 3090 (22 GB usable) | 2× RTX 3090 (44 GB usable) | 2× RTX 5060 Ti (28 GB usable) |
+| Model | Size | 1× RTX 3090 <br><small>22 GB usable</small> | 2× RTX 3090 <br><small>44 GB usable</small> | 2× RTX 5060 Ti <br><small>28 GB usable</small> |
 |-------|------|-------------|-------------|---------------|
 | Qwen3 30B A3B | <span id="size-qwen330b">17.3 GB</span> | <span id="cell-qwen330b-1x3090">✅ 4.7 GB free<br><small>4K ctx</small></span> | <span id="cell-qwen330b-2x3090">✅ 26.7 GB free<br><small>40K ctx</small></span> | <span id="cell-qwen330b-2x5060">✅ 10.7 GB free<br><small>16K ctx</small></span> |
 | Qwen 3.6 27B MTP | <span id="size-qwen27b">15.9 GB</span> | <span id="cell-qwen27b-1x3090">✅ 6.1 GB free<br><small>9K ctx</small></span> | <span id="cell-qwen27b-2x3090">✅ 28.1 GB free<br><small>42K ctx</small></span> | <span id="cell-qwen27b-2x5060">✅ 12.1 GB free<br><small>18K ctx</small></span> |
@@ -18,6 +18,10 @@ Select quantization to see VRAM usage and recommended context sizes for each pai
 | Gemma 3 27B | <span id="size-gemma27b">16.0 GB</span> | <span id="cell-gemma27b-1x3090">✅ 6.0 GB free<br><small>9K ctx</small></span> | <span id="cell-gemma27b-2x3090">✅ 28.0 GB free<br><small>42K ctx</small></span> | <span id="cell-gemma27b-2x5060">✅ 12.0 GB free<br><small>18K ctx</small></span> |
 
 <span id="pair-count">12</span> compatible pairs at <span class="cur-quant">Q4_K_M</span> · <span id="fail-count">0</span> borderline (< 1 GB free for KV cache)
+
+> **Usable VRAM** = total VRAM − 2 GB per GPU (system/KV cache overhead).<br>
+> **Recommended ctx** = estimated maximum context before OOM. Reduce by 25% for safety.
+> Data sourced from [Unsloth GGUF repos](https://huggingface.co/unsloth).
 
 ---
 
