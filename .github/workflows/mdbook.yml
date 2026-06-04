@@ -44,10 +44,11 @@ jobs:
         run: bash scripts/rebuild-book.sh
       - name: Build with mdBook
         run: mdbook build
+        working-directory: book
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./book
+          path: ./book/book
 
   # Deployment job
   deploy:
