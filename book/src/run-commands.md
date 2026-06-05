@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-04
+> Last updated: 2026-06-05
 
 ---
 
@@ -424,6 +424,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 | Date | Changes |
 |------|---------|
+| 2026-06-05 | **PR #23792**: Tensor parallelism (`--split-mode tensor`) now supports quantized KV cache (`--type-k`, `--type-v`). The previous restriction is lifted, allowing TP users to reduce KV cache VRAM with quantization. Users should add `--type-k q8_0 --type-v q8_0` (or Q4_0 for more savings) to multi-GPU tensor-split commands. No flag changes needed for layer-split mode. |
 | 2026-06-04 | Reviewed — no changes needed. Today's PRs (Gemma 4 unified, Granite Embeddings R2, iGPU dedup, Turing MMVQ tuning, AMD MFMA dispatch, Hexagon refresh) are backend/model additions that don't change run command flags or recommendations. |
 | 2026-06-04 | Initial commands based on current llama.cpp build. Sourced from Unsloth GGUF repos. Added interactive quant selector (Q4_K_M / Q5_K_M / Q6_K). |
 
