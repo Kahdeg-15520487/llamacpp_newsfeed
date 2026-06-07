@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-06
+> Last updated: 2026-06-07
 
 ---
 
@@ -424,6 +424,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 | Date | Changes |
 |------|---------|
+| 2026-06-07 | Reviewed — no changes needed. PRs this period (LFM2 reasoning fix, n_gpu_layers off-by-one, Gemma4 no-audio converter fix, Docker CUDA 13.3.0 bump, PDL race condition fix, SVE FWHT fix, dynamic chunk scheduling for kleidiai) are backend optimizations or correctness fixes that don't change run command flags or recommendations. |
 | 2026-06-06 | Reviewed — no changes needed. PRs this week (TP granularity 128, CUDA KV-cache reservation, Qwen3.6 MTP fix, Gemma 4 unified, EXAONE 4.5, Granite4 Vision, Granite Embeddings R2) are backend/model additions or correctness fixes that don't change run command flags or recommendations. Note: Qwen3.6 MTP users should re-download updated GGUFs after the post-norm MTP fix (#24025). |
 | 2026-06-05 | **PR #23792**: Tensor parallelism (`--split-mode tensor`) now supports quantized KV cache (`--type-k`, `--type-v`). The previous restriction is lifted, allowing TP users to reduce KV cache VRAM with quantization. Users should add `--type-k q8_0 --type-v q8_0` (or Q4_0 for more savings) to multi-GPU tensor-split commands. No flag changes needed for layer-split mode. |
 | 2026-06-04 | Reviewed — no changes needed. Today's PRs (Gemma 4 unified, Granite Embeddings R2, iGPU dedup, Turing MMVQ tuning, AMD MFMA dispatch, Hexagon refresh) are backend/model additions that don't change run command flags or recommendations. |
