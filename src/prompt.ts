@@ -31,12 +31,23 @@ export function buildTaskPrompt(): string {
 
   return `## Task: Generate Llama.cpp Daily News Report
 
+### Step 0: Deduplication — Skip Already-Covered PRs
+
+**CRITICAL:** You MUST prevent duplicate PR coverage across daily reports.
+
+1. **Find previous reports:** List files in \`${OUTPUT_DIR}/\` using bash: \`ls -1r ${OUTPUT_DIR}/*.md 2>/dev/null\`
+2. **Identify the most recent report** (the one with the latest date in the filename, e.g. \`2026-06-09-llama-cpp-news.md\`)
+3. **Read that report** using the read tool and extract all PR numbers it already covered (look for \`PR #N\` or \`#N\` in PR detail headings)
+4. **Set your cutoff date:** Determine the latest \`merged_at\` date of any PR in that report. Only cover PRs merged **after** that date.
+5. **If no previous report exists** (first run ever), fall back to a ${PR_LOOKBACK_DAYS}-day lookback window.
+6. **Skip covered PRs:** When you encounter a PR you've already seen in a previous report, exclude it — even if it got new comments or updates.
+
 ### Step 1: Fetch Recent Merged PRs
 
-Fetch the last ${PR_LOOKBACK_DAYS} days of merged PRs from \`${LLAMACPP_REPO}\` using the GitHub API:
+Fetch merged PRs from \`${LLAMACPP_REPO}\` using the GitHub API:
 - Endpoint: \`https://api.github.com/repos/${LLAMACPP_REPO}/pulls?state=closed&sort=updated&direction=desc&per_page=50\`
 - Use the webfetch tool with appropriate headers (Accept: application/vnd.github+json)
-- Filter to only PRs merged in the last ${PR_LOOKBACK_DAYS} days (check merged_at field)
+- Filter to only PRs merged after your cutoff date (from Step 0) and within the last ${PR_LOOKBACK_DAYS} days at most
 - Focus on PRs with meaningful changes — skip trivial typo fixes and merge-branch PRs
 
 ### Step 2: Categorize Each PR
