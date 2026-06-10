@@ -9,134 +9,32 @@
 
 | Metric | Count |
 |--------|-------|
-| PRs analyzed | 13 |
-| Backend PRs | 4 |
-| UI/Web PRs | 4 |
-| Bug Fix PRs | 2 |
-| Model Support PRs | 1 |
-| Server/API PRs | 1 |
+| PRs analyzed | 2 |
+| Bug Fix PRs | 1 |
 | Build/CI PRs | 1 |
 
 ---
 
-
-
 ## 🔍 PR Details
 
-### [Backend] — PR #24123: vulkan: add v_dot2_f32_f16 support in matrix-matrix multiplication and Flash Attention
-
-**Merged:** 2026-06-09 | **Author:** @0cc4m
-
-**Summary:** Adds support for the Vulkan `VK_VALVE_shader_mixed_float_dot_product` extension, enabling fp16 packed dot product instructions (v_dot2_f32_f16) on AMD GPUs like Vega20, Navi14, and RDNA2+. This gives up to 2× speedup for f16 matmuls and IQ-type quantized matmuls on affected AMD GPUs, and up to ~60-90% prompt processing speedup in end-to-end model benchmarks. No user-facing flags changed; the optimization is automatically used when the GPU supports the extension.
-
-**Affected areas:** Vulkan backend, AMD GPU performance
-
-
-### [Backend] — PR #23935: cuda: reset cuda context after reading memory size
-
-**Merged:** 2026-06-08 | **Author:** @0cc4m
-
-**Summary:** Allows reading CUDA memory info via `cudaMemGetInfo` without creating a permanent CUDA context. This is infrastructure for router process support (#21231) and avoids permanent memory allocation from naive context initialization. No user-facing changes; enables future multi-process improvements.
-
-**Affected areas:** CUDA backend, memory management
-
-
-### [Backend] — PR #24287: vulkan: reduce iq1 shared memory usage for mul_mm
-
-**Merged:** 2026-06-09 | **Author:** @jeffbolznv
-
-**Summary:** Fixes Vulkan shared memory overflow when using IQ1 quantization types by guarding `iq1s_grid_gpu` usage — it's now only included in `mmvq` paths, keeping shared memory under 16KB for `mul_mm`. Fixes issue #24284. GPU compatibility fix, no flags changed.
-
-**Affected areas:** Vulkan backend, IQ1 quantization
-
-
-### [Bug Fix] — PR #24357: Fix granite speech model inference by applying embedding scale when deepstack is not used
-
-**Merged:** 2026-06-09 | **Author:** @arnu515
-
-**Summary:** Fixes Granite speech model inference that regressed after PR #23545. The embedding scaling was gated on deepstack layers, which Granite speech doesn't have, causing it to output asterisks indefinitely. Adds a guard for deepstack layers so Granite speech (and other models without deepstack) scale embeddings correctly.
-
-**Affected areas:** Granite model family, embedding scaling
-
-
-### [Server/API] — PR #22031: server: log prompts to directory
-
-**Merged:** 2026-06-09 | **Author:** @jacekpoplawski
-
-**Summary:** Adds prompt logging to individual text files in the server directory for debugging prompt-processing cache behavior. Each incoming prompt is written to a separate plain-text file, making it easy to compare exact prompt contents between requests. Useful for diagnosing cache-related issues, especially with client-side prompt reordering.
-
-**Affected areas:** llama-server, debugging
-
-
-### [Model Support] — PR #24282: mtp: support for gemma-4 E2B and E4B assistants
-
-**Merged:** 2026-06-08 | **Author:** @max-krasnyansky
-
-**Summary:** Enables conversion and loading of the smaller Gemma 4 E2B and E4B assistant/draft models by adding support for two new tensors: `masked_embedding.centroids.weight` and `masked_embedding.token_ordering`. These are marked as `TENSOR_NOT_REQUIRED` for compatibility. Users can now use these compact draft models for speculative decoding on less powerful hardware (e.g., mobile).
-
-**Affected areas:** Gemma 4 model family, MTP, model conversion
-
-
-### [UI/Web] — PR #21387: webui: implement pinned conversations support
-
-**Merged:** 2026-06-09 | **Author:** @remeh
-
-**Summary:** Adds "pinned conversations" support to the WebUI, allowing users to pin/unpin conversations from the context menu in the sidebar. Pinned conversations appear in a dedicated "Pinned" section at the top of the list, providing quick access to important chat threads. No keyboard shortcut implemented to avoid browser conflicts.
-
-**Affected areas:** WebUI, chat management
-
-
-### [UI/Web] — PR #24244: ui: add opt-in run_javascript frontend tool
-
-**Merged:** 2026-06-09 | **Author:** @ServeurpersoCom
-
-**Summary:** Exposes a `run_javascript` tool to the model, executed entirely in the browser through the existing agentic loop. Code runs in a Web Worker inside a sandboxed iframe with an opaque origin, isolated from the WebUI. Disabled by default (toggle in Settings > Developer). Enables models to perform client-side computation, DOM manipulation, or API calls.
-
-**Affected areas:** WebUI, agentic loop, developer tools
-
-
-### [UI/Web] — PR #24243: ui: Fix excessive style recalculation on hover
-
-**Merged:** 2026-06-09 | **Author:** @ntowle
-
-**Summary:** Fixes a performance bug in the WebUI where a CSS transition on `scrollbar-color` applied to all elements caused excessive style recalculations on hover. In Chrome, this caused 6356 elements to be invalidated per hover event, freezing the UI for ~1s when expanding reasoning blocks. After the fix, only 27 elements are invalidated and interactions are instant.
-
-**Affected areas:** WebUI, performance
-
-
-### [UI/Web] — PR #24158: ui: fix mobile chat form overflow and bust stale bundle cache
-
-**Merged:** 2026-06-09 | **Author:** @ServeurpersoCom
-
-**Summary:** Fixes the chat form overflowing below the visual viewport on mobile browsers by switching from `h-screen` to `h-dvh`. Also adds bundle cache busting by appending Vite hash as query strings to `bundle.js`/`bundle.css`. Essential for validating UI fixes on real mobile devices.
-
-**Affected areas:** WebUI, mobile support
-
-
-### [Backend] — PR #24352: mtmd: build_vit batching
-
-**Merged:** 2026-06-09 | **Author:** @sfallah
-
-**Summary:** Introduces an optional batch dimension in `build_vit`, allowing callers to encode several same-size inputs (image tiles, video frames) in a single graph execution. For existing models with `B == 1`, there is no change. This is the foundational change for DeepSeek-OCR multi-tile encoding (#24300). All existing mtmd tests continue to pass.
-
-**Affected areas:** Vision transformer, multimodal, DeepSeek-OCR
-
-
-### [Build/CI] — PR #24369: ci: fix windows release
-
-**Merged:** 2026-06-09 | **Author:** @CISC
-
-**Summary:** Fixes the Windows release build after GitHub Actions started forwarding the `windows-2025` runner to `windows-2025-vs2026`, which broke the build. No user-facing impact beyond restored CI.
-
-**Affected areas:** CI/CD, Windows builds
-
-
-### [Bug Fix] — PR #24253: speculative: fix "ngram-map-k4v" name in logging
+### [Bug Fix] — PR #24253: Fix "ngram-map-k4v" name in speculative logging
 
 **Merged:** 2026-06-10 | **Author:** @ddh0
 
-**Summary:** Fixes a logging issue where `--spec-type ngram-map-k4v` incorrectly showed as `ngram-map-k` in log messages at startup and runtime. Now correctly passes the speculative type name. Non-functional change, purely cosmetic fix.
+**Summary:** Fixes a cosmetic bug where the `--spec-type ngram-map-k4v` speculative decoding mode was incorrectly logged as `ngram-map-k` at startup and during runtime. The constructor of `common_speculative_impl_ngram_map_k` now passes the correct `COMMON_SPECULATIVE_TYPE_NGRAM_MAP_K4V` when `config.key_only` is `false`. This is a non-functional change — users will now see the correct speculative type name in log output when using the `ngram-map-k4v` mode.
 
-**Affected areas:** speculative decoding, logging
+**Affected areas:** speculative, logging
 
-*Report generated 2026-06-10T07:32:35.277Z | Next update: tomorrow*
+---
+
+### [Build/CI] — PR #24396: Bump komac version
+
+**Merged:** 2026-06-10 | **Author:** @CISC
+
+**Summary:** Bumps the komac (Windows Package Manager manifest) version in the CI pipeline to fix a winget release job failure caused by the removal of `yara-x` from the komac dependency tree. No user-facing impact — this is purely a CI maintenance fix to keep the Windows release publishing workflow operational.
+
+**Affected areas:** CI, winget, build
+
+---
+
+*Report generated 2026-06-10T09:17:12.703Z | Next update: tomorrow*
