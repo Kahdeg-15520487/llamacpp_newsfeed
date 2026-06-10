@@ -5,4 +5,8 @@ dist/
 .env.local
 .DS_Store
 Thumbs.db
-.pi/agent/runs/
+.pi/
+# Temp files (stray pipeline artifacts)
+*Temp*.json
+*Temp*.md
+book/book/
