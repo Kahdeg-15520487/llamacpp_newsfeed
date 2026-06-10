@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-09
+> Last updated: 2026-06-10
 
 ---
 
@@ -424,6 +424,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 | Date | Changes |
 |------|---------|
+| 2026-06-10 | Reviewed — no changes needed. Today's PRs include: Gemma4 MTP support (#23398) delivering 2× speedup on dense models; Vulkan v_dot2_f32_f16 (#24123) up to 2× f16 matmul speedup on AMD; Vulkan IQ1 shared memory fix (#24287); COL2IM_1D CPU op (#24206) for audio vocoders; Granite speech embedding fix (#24357); server prompt logging (#22031); idle KV cache slot export fix (#24190); WebUI pinned conversations (#21387), run_javascript tool (#24244), mobile overflow fix (#24158), and style perf fix (#24243); SYCL multi-column MMVQ port (#21845) for ~45% speculative decoding speedup on Intel Arc; build_vit batching (#24352) enabling future DeepSeek-OCR multi-tile encoding; and various bug fixes (plamo2 regression #24317, rms_norm_back aliasing #24305, speculative vocab check #24256). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-09 | Reviewed — no changes needed. Today's PRs include: GGML_OP_COL2IM_1D CPU (#24206) for audio vocoder upsampling; idle slot RAM export fix (#24190) improving parallel slot KV caching; plamo2 attention_key/value_length regression fix (#24317); rms_norm_back aliasing correctness fix (#24305); ggml-webgpu clang-format CI (#24308); LFM2/LFM2.5 tool parser unification (#24178); SYCL multi-column MMVQ (#21845) delivering ~45% speculative decoding speedup on Intel Arc; Gemma 4 unified variant support (#24077); Step35 MTP KV cache allocation fix (#24125) reducing draft KV cache from 216 MiB to 18 MiB; CI ccache disable for MSVC (#23911); --no-mmproj download fix (#23425); OpenCL flat GEMV for large M (#24006). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-08 | Reviewed — no changes needed. Today's PRs include Vulkan MoE optimizations (#23991), CUDA PDL MoE enrollment (#24087), Gemma4 MTP support (#23398), SYCL multi-column MMVQ (#21845), HIP RDNA3.5 GPU additions (#24129), Granite4 Vision (#23545), Metal im2col audio fix (#24220), n_layer hparams refactor (#24060), and various bug fixes (speculative vocab check #24256, off-by-one n_gpu_layers #24208, LFM2 reasoning #24234, Mistral-Medium converter #24268, Gemma4 no-audio converter #24242). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-07 | Reviewed — no changes needed. PRs this period (LFM2 reasoning fix, n_gpu_layers off-by-one, Gemma4 no-audio converter fix, Docker CUDA 13.3.0 bump, PDL race condition fix, SVE FWHT fix, dynamic chunk scheduling for kleidiai) are backend optimizations or correctness fixes that don't change run command flags or recommendations. |
