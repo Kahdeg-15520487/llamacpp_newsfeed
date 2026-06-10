@@ -9,17 +9,17 @@
 
 | Metric | Count |
 |--------|-------|
-| PRs analyzed | 50 |
-| Backend PRs | 16 |
-| Bug fixes | 11 |
-| Performance PRs | 8 |
-| Model Support | 7 |
-| Server/API | 4 |
-| CLI/Tooling | 2 |
-| Documentation | 2 |
-| Other | 0 |
+| PRs analyzed | 41 |
+| Backend PRs | 15 |
+| Bug Fix PRs | 9 |
+| Server/API PRs | 7 |
+| Model Support PRs | 4 |
+| Performance PRs | 4 |
+| CLI/Tooling PRs | 2 |
 
 ---
+
+
 
 ## 🔍 PR Details
 
@@ -31,7 +31,6 @@
 
 **Affected areas:** Vulkan, ggml
 
----
 
 ### [Bug Fix] — PR #24208: context : fix off-by-one comparisons to n_gpu_layers
 
@@ -41,7 +40,6 @@
 
 **Affected areas:** model, context
 
----
 
 ### [Backend] — PR #24160: opencl: improve get_rows, cpy, concat and q6_k flat gemv
 
@@ -51,7 +49,6 @@
 
 **Affected areas:** OpenCL, ggml
 
----
 
 ### [Backend] — PR #23964: vulkan: add fwht support for Intel with shmem reduction
 
@@ -61,7 +58,6 @@
 
 **Affected areas:** Vulkan, ggml
 
----
 
 ### [Model Support] — PR #23545: model: Granite4 Vision
 
@@ -71,7 +67,6 @@
 
 **Affected areas:** model, examples (convert scripts), python
 
----
 
 ### [Performance] — PR #24180: TP: round up granularity to 128
 
@@ -81,7 +76,6 @@
 
 **Affected areas:** Tensor parallelism
 
----
 
 ### [Bug Fix] — PR #23893: llama-cli: fix model params not propagated
 
@@ -91,7 +85,6 @@
 
 **Affected areas:** llama-cli (examples)
 
----
 
 ### [Bug Fix] — PR #24188: model : fix llama_model::n_gpu_layers()
 
@@ -101,7 +94,6 @@
 
 **Affected areas:** model, context
 
----
 
 ### [Performance] — PR #23819: kleidiai : dynamic chunk-based scheduling for hybrid execution
 
@@ -111,7 +103,6 @@
 
 **Affected areas:** ggml, CPU/GPU scheduling
 
----
 
 ### [Backend] — PR #24087: CUDA: enroll mul_mat_vec_q_moe into pdl
 
@@ -121,7 +112,6 @@
 
 **Affected areas:** NVIDIA GPU, ggml (CUDA)
 
----
 
 ### [Backend] — PR #21845: sycl : port multi-column MMVQ from CUDA backend (~45% speculative decoding speedup on Intel Arc)
 
@@ -131,7 +121,6 @@
 
 **Affected areas:** SYCL, ggml
 
----
 
 ### [Server/API] — PR #24108: server : disable on-device spec checkpoints
 
@@ -141,7 +130,6 @@
 
 **Affected areas:** server, speculative decoding
 
----
 
 ### [CLI/Tooling] — PR #22445: Move duplicated imatrix code into single common imatrix-loader.cpp
 
@@ -151,7 +139,6 @@
 
 **Affected areas:** quantize, imatrix (examples)
 
----
 
 ### [Backend] — PR #22209: ggml: vectorize ggml_vec_dot_q4_1_q8_1 with WASM SIMD128
 
@@ -161,7 +148,6 @@
 
 **Affected areas:** ggml, WASM
 
----
 
 ### [Server/API] — PR #24110: server: avoid unnecessary checkpoint restore when new tokens are present
 
@@ -171,7 +157,6 @@
 
 **Affected areas:** server
 
----
 
 ### [Backend] — PR #24074: metal : reduce rset heartbeat from 500ms -> 5ms
 
@@ -181,7 +166,6 @@
 
 **Affected areas:** Apple Metal, ggml
 
----
 
 ### [Backend] — PR #23834: ggml-webgpu: FlashAttention refactor + standardize quantization support
 
@@ -191,7 +175,6 @@
 
 **Affected areas:** WebGPU, ggml
 
----
 
 ### [Backend] — PR #22754: ggml-cpu: extend RVV quantization vec dot to higher VLENs
 
@@ -201,7 +184,6 @@
 
 **Affected areas:** ggml-cpu, RISC-V
 
----
 
 ### [Bug Fix] — PR #24025: qwen35: use post-norm hidden state for MTP
 
@@ -211,17 +193,6 @@
 
 **Affected areas:** model, MTP
 
----
-
-### [Model Support] — PR #24077: mtmd, model: add Gemma 4 "unified" variant
-
-**Merged:** 2026-06-03 | **Author:** @ngxson
-
-**Summary:** Adds support for the Gemma 4 "unified" multimodal variant to both the model loading code and MTMD pipeline. This brings Google's latest vision-language model to local inference. Users can now run Gemma 4 unified models through `llama-mtmd-cli` or the server with multimodal support.
-
-**Affected areas:** model, MTMD, python (convert)
-
----
 
 ### [Server/API] — PR #24032: ui: Mermaid Diagrams in chat + interactive preview
 
@@ -231,7 +202,6 @@
 
 **Affected areas:** server/web UI
 
----
 
 ### [Bug Fix] — PR #24030: Avoid PDL race conditions by disabling __restrict__ when PDL is used
 
@@ -241,7 +211,6 @@
 
 **Affected areas:** NVIDIA GPU, ggml (CUDA)
 
----
 
 ### [Performance] — PR #23907: cuda: reserve space for quantize kv-cache at startup
 
@@ -251,7 +220,6 @@
 
 **Affected areas:** NVIDIA GPU, ggml (CUDA)
 
----
 
 ### [Model Support] — PR #24031: tests : add support for qwen3 SSM archs
 
@@ -261,7 +229,6 @@
 
 **Affected areas:** model, testing
 
----
 
 ### [Backend] — PR #24006: opencl: use flat variants of gemv for very large M
 
@@ -271,17 +238,6 @@
 
 **Affected areas:** OpenCL, ggml
 
----
-
-### [Model Support] — PR #22716: Adding support for the granite multilingual embeddings R2
-
-**Merged:** 2026-06-02 | **Author:** @hansolosan
-
-**Summary:** Adds support for IBM Granite Embedding R2 models (`granite-embedding-{97,311}m-multilingual-r2`). These are ModernBERT-based embedding models with SwiGLU FFN support. Includes tokenizer configuration, hash matching, and vocab pre-type support. Users can now generate embeddings locally with Granite R2 models for multilingual retrieval/embedding use cases.
-
-**Affected areas:** model, python (convert)
-
----
 
 ### [Bug Fix] — PR #23468: common : fix state save in common_prompt_batch_decode
 
@@ -291,7 +247,6 @@
 
 **Affected areas:** common, examples
 
----
 
 ### [Server/API] — PR #24013: server: add SSE ping interval
 
@@ -301,17 +256,6 @@
 
 **Affected areas:** server
 
----
-
-### [Backend] — PR #23989: hexagon: MUL_MAT, MUL_MAT_ID, FLASH_ATTN and GDN cleanup and optimizations
-
-**Merged:** 2026-06-02 | **Author:** @max-krasnyansky
-
-**Summary:** Major optimization and cleanup of the Qualcomm Hexagon DSP backend. Optimizes MUL_MAT, MUL_MAT_ID, and FLASH_ATTN operations for the latest model architectures. Also includes GDN (global data network) cleanup. Users running models on Snapdragon-powered devices with Hexagon DSP acceleration will see improved performance.
-
-**Affected areas:** Hexagon, ggml
-
----
 
 ### [Server/API] — PR #23971: server: real-time reasoning interruption via control endpoint
 
@@ -321,7 +265,6 @@
 
 **Affected areas:** server, web UI
 
----
 
 ### [Bug Fix] — PR #23988: speculative : fix n_outputs_max and remove draft-simple auto-enable
 
@@ -331,7 +274,6 @@
 
 **Affected areas:** speculative, server
 
----
 
 ### [Performance] — PR #23861: llama: limit max outputs of `llama_context`
 
@@ -341,7 +283,6 @@
 
 **Affected areas:** examples, server
 
----
 
 ### [Backend] — PR #23882: metal: template GLU kernels to support f16/f32
 
@@ -351,7 +292,6 @@
 
 **Affected areas:** Apple Metal, ggml
 
----
 
 ### [Backend] — PR #23641: vulkan: don't hold the device mutex while compiling pipelines
 
@@ -361,7 +301,6 @@
 
 **Affected areas:** Vulkan, ggml
 
----
 
 ### [Backend] — PR #23376: vulkan: reduces lock contention
 
@@ -371,7 +310,6 @@
 
 **Affected areas:** Vulkan, ggml
 
----
 
 ### [Model Support] — PR #21733: Add EXAONE 4.5 implementations
 
@@ -381,7 +319,6 @@
 
 **Affected areas:** model, examples, python (convert)
 
----
 
 ### [Backend] — PR #23056: vulkan: Block-load Q3_K/Q6_K block data and subtract on 32b ints
 
@@ -391,7 +328,6 @@
 
 **Affected areas:** Vulkan, ggml
 
----
 
 ### [Bug Fix] — PR #23949: common : support manually triggering the reasoning budget end sequence
 
@@ -401,7 +337,6 @@
 
 **Affected areas:** common, testing
 
----
 
 ### [Server/API] — PR #23916: server: handle If-None-Match weak ETags
 
@@ -411,7 +346,6 @@
 
 **Affected areas:** server
 
----
 
 ### [Model Support] — PR #18756: vocab: add tokenizer support for jina-embeddings-v2-base-zh
 
@@ -421,7 +355,6 @@
 
 **Affected areas:** vocab, python
 
----
 
 ### [Server/API] — PR #23904: webui: add custom CSS injection via config
 
@@ -431,7 +364,6 @@
 
 **Affected areas:** server/web UI
 
----
 
 ### [CLI/Tooling] — PR #23714: Support `-fa auto` in llama-bench
 
@@ -441,7 +373,6 @@
 
 **Affected areas:** llama-bench (examples)
 
----
 
 ### [Backend] — PR #23839: opencl: support bf16 by converting to f16
 
@@ -451,7 +382,6 @@
 
 **Affected areas:** OpenCL, ggml
 
----
 
 ### [Bug Fix] — PR #23843: TP: fix granularity for Qwen 3.5/3.6 + 3 GPUs
 
@@ -460,8 +390,6 @@
 **Summary:** Fixes a tensor parallelism granularity calculation bug specific to Qwen 3.5/3.6 models running on 3-GPU setups. The previous code could produce uneven splits or incorrect tensor sharding for these architectures. Users with 3-GPU tensor-parallel configurations for Qwen models should see correct behavior after this fix.
 
 **Affected areas:** Tensor parallelism
-
----
 
 ## 📝 Notable Mentions
 
@@ -473,6 +401,7 @@
 | #23819 | kleidiai: dynamic chunk-based scheduling for hybrid | Replaces static scheduling with dynamic approach for CPU/GPU hybrid execution |
 
 ---
+
 
 ## 🖥️ Run Command Impact
 
@@ -488,5 +417,6 @@ The following PRs from this week may affect run command recommendations:
 No flag or recommendation changes needed for the current 4 models × 3 GPU setup matrix.
 
 ---
+
 
 *Report generated 2026-06-06T08:55:38.631Z | Next update: tomorrow*

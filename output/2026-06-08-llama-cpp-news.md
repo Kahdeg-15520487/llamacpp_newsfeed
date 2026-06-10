@@ -9,18 +9,19 @@
 
 | Metric | Count |
 |--------|-------|
-| PRs analyzed | 27 |
-| Backend PRs | 6 |
-| Bug fixes | 6 |
-| Performance PRs | 3 |
-| Model Support | 4 |
-| Server/API | 2 |
-| CLI/Tooling | 3 |
-| Documentation | 0 |
-| Build/CI | 2 |
-| Other | 1 |
+| PRs analyzed | 20 |
+| Other PRs | 4 |
+| Backend PRs | 3 |
+| CLI/Tooling PRs | 3 |
+| Bug Fix PRs | 3 |
+| Model Support PRs | 2 |
+| Performance PRs | 2 |
+| Server/API PRs | 2 |
+| Build/CI PRs | 1 |
 
 ---
+
+
 
 ## 🔍 PR Details
 
@@ -32,27 +33,6 @@
 
 **Affected areas:** Vulkan, ggml
 
----
-
-### [Backend] — PR #24087: CUDA: enroll mul_mat_vec_q_moe into pdl
-
-**Merged:** 2026-06-05 | **Author:** @ORippler
-
-**Summary:** Enrolls the `mul_mat_vec_q_moe` kernel into the persistent data loading (PDL) system for CUDA. This gives a small (~1%) performance boost at microbatch sizes between 1 and 8 during prompt processing of MoE models. The improvement is automatic for CUDA users with no configuration changes needed.
-
-**Affected areas:** CUDA, ggml
-
----
-
-### [Backend] — PR #21845: sycl: port multi-column MMVQ from CUDA backend (~45% speculative decoding speedup on Intel Arc)
-
-**Merged:** 2026-06-05 | **Author:** @masonmilby
-
-**Summary:** Ports the multi-column MMVQ (multi-mat-vec) optimization from the CUDA backend to SYCL. Previously, speculative decoding on SYCL was slower than single-token prediction because MMVQ launched a separate kernel per column. Now weights are read once and all columns are computed in a single dispatch, yielding ~45% speedup for speculative decoding on Intel Arc GPUs. SYCL users benefit automatically with no flag changes.
-
-**Affected areas:** SYCL, ggml
-
----
 
 ### [Backend] — PR #24129: HIP: add gfx1152 and gfx1153 to RDNA3.5
 
@@ -62,17 +42,6 @@
 
 **Affected areas:** HIP/ROCm, ggml
 
----
-
-### [Backend] — PR #24186: vulkan: check coopmat2 features before reporting support
-
-**Merged:** 2026-06-06 | **Author:** @0cc4m
-
-**Summary:** Fixes the Vulkan backend incorrectly advertising NV_coopmat2 matrix core support on platforms where the driver (e.g., Mesa ANV/RADV) exposes the extension but the device doesn't actually support the cooperative matrix features. Previously, Intel Arc A770 was erroneously reported as having coopmat2 support. This change prevents incorrect dispatch paths from being selected.
-
-**Affected areas:** Vulkan, ggml
-
----
 
 ### [Backend] — PR #24220: metal: fix im2col 1D case (audio models)
 
@@ -82,7 +51,6 @@
 
 **Affected areas:** Metal, ggml
 
----
 
 ### [Model Support] — PR #23398: llama: add Gemma4 MTP
 
@@ -92,27 +60,6 @@
 
 **Affected areas:** model, server, python, examples
 
----
-
-### [Model Support] — PR #23545: model: Granite4 Vision
-
-**Merged:** 2026-06-05 | **Author:** @gabe-l-hart
-
-**Summary:** Adds support for the `Granite4VisionForConditionalGeneration` multimodal architecture, targeting IBM's granite-vision-4.1-4b and granite-4.0-3b-vision models. This new mtmd architecture handles vision-language tasks. Users can now run these granite vision models locally through llama.cpp's multimodal pipeline.
-
-**Affected areas:** model, examples, python
-
----
-
-### [Model Support] — PR #24060: hparams: refactor `hparams.n_layer`
-
-**Merged:** 2026-06-05 | **Author:** @ggerganov
-
-**Summary:** Refactors the model layer enumeration logic to clearly distinguish between `n_layer_all` (all layers from the model file, including extras like `nextn`) and `n_layer()` (actual model layers). This improves correctness for models with extra layers (e.g., MTP heads) and fixes edge cases where off-by-one errors could occur. Some models may have been broken by this change — users should test their specific model configurations.
-
-**Affected areas:** model
-
----
 
 ### [Model Support] — PR #21858: mtmd: support "frame merge" for qwen-vl-based models
 
@@ -122,7 +69,6 @@
 
 **Affected areas:** mtmd, examples
 
----
 
 ### [Bug Fix] — PR #24068: fix: handle hybrid models where layer 0 has no attention heads
 
@@ -132,17 +78,6 @@
 
 **Affected areas:** model
 
----
-
-### [Bug Fix] — PR #24208: context: fix off-by-one comparisons to n_gpu_layers
-
-**Merged:** 2026-06-06 | **Author:** @CISC
-
-**Summary:** Fixes off-by-one errors in comparisons between `n_gpu_layers` and the actual layer count. The code was comparing against `n_layer` instead of `n_layer_all`, which could cause incorrect GPU offloading decisions for models with extra layers (e.g., MTP heads). Users with models that have extra layers beyond the base model will now get correct layer offloading.
-
-**Affected areas:** context, model
-
----
 
 ### [Bug Fix] — PR #24256: speculative: fix vocab compatibility check
 
@@ -152,17 +87,6 @@
 
 **Affected areas:** speculative
 
----
-
-### [Bug Fix] — PR #24234: common/chat: fix LFM2/LFM2.5 reasoning round-trip and `<think>` leak
-
-**Merged:** 2026-06-06 | **Author:** @tdakhran
-
-**Summary:** Fixes issues with the LFM2 and LFM2.5 chat template parsers where reasoning content could leak outside `<think>` tags during chat round-trips. This ensures that model responses correctly separate reasoning from final output when using these chat formats. Users of LFM2/LFM2.5 models benefit from cleaner chat interactions.
-
-**Affected areas:** common, chat
-
----
 
 ### [Bug Fix] — PR #24268: convert: fix conversion for Mistral-Medium-3.5-128B
 
@@ -172,17 +96,6 @@
 
 **Affected areas:** python, conversion
 
----
-
-### [Bug Fix] — PR #24242: convert: fix Gemma4 with no audio encoder
-
-**Merged:** 2026-06-07 | **Author:** @CISC
-
-**Summary:** Fixes the GGUF converter for Gemma 4 model variants that don't include an audio encoder. The converter now checks for the existence of audio projector metadata before attempting to add it, preventing conversion failures on text-only Gemma 4 variants. Users converting Gemma 4 models without audio capabilities will now succeed.
-
-**Affected areas:** python, conversion
-
----
 
 ### [Performance] — PR #24277: kv-cache: avoid kv cells copies
 
@@ -192,7 +105,6 @@
 
 **Affected areas:** kv-cache, performance
 
----
 
 ### [Performance] — PR #24267: kv-cache: follow the source cache size when sharing cells
 
@@ -202,7 +114,6 @@
 
 **Affected areas:** kv-cache, speculative
 
----
 
 ### [Server/API] — PR #23913: mtmd, server: add "placeholder bitmap" for counting tokens, add `*/input_tokens` API
 
@@ -212,7 +123,6 @@
 
 **Affected areas:** server, mtmd, python
 
----
 
 ### [Server/API] — PR #24290: server: reject mismatched embedding batch sizes
 
@@ -222,7 +132,6 @@
 
 **Affected areas:** server
 
----
 
 ### [CLI/Tooling] — PR #24283: cli: fix spinner not show during prompt processing
 
@@ -232,7 +141,6 @@
 
 **Affected areas:** CLI, examples
 
----
 
 ### [CLI/Tooling] — PR #24239: arg: Skip mmproj download when user supplied mmproj
 
@@ -242,7 +150,6 @@
 
 **Affected areas:** CLI, common
 
----
 
 ### [CLI/Tooling] — PR #23744: common: relax sampler name matching
 
@@ -252,17 +159,6 @@
 
 **Affected areas:** common, sampling
 
----
-
-### [Build/CI] — PR #24228: docker: bump cuda13 to 13.3.0
-
-**Merged:** 2026-06-07 | **Author:** @CISC
-
-**Summary:** Bumps the CUDA 13 Docker image from the previous version to CUDA 13.3.0. This ensures Docker-based builds and CI use the latest CUDA toolchain with the newest compiler optimizations and bug fixes. Users building via Docker will automatically get the updated CUDA version.
-
-**Affected areas:** docker, build
-
----
 
 ### [Build/CI] — PR #24070: [SYCL] Update compute runtime version to 26.x in docker
 
@@ -272,7 +168,6 @@
 
 **Affected areas:** SYCL, docker, build
 
----
 
 ### [Other] — PR #24226: completion: remove useless statics
 
@@ -282,7 +177,6 @@
 
 **Affected areas:** examples, completion
 
----
 
 ### [Other] — PR #24213: completion: fix format specifier in LOG_INF
 
@@ -292,7 +186,6 @@
 
 **Affected areas:** examples, completion
 
----
 
 ### [Other] — PR #24209: model: rename local n_layer_all variable
 
@@ -302,7 +195,6 @@
 
 **Affected areas:** model
 
----
 
 ### [Other] — PR #24178: common/chat: unify and fix LFM2/LFM2.5 tool parser
 
@@ -311,7 +203,5 @@
 **Summary:** Merges the LFM2 and LFM2.5 tool-calling parsers into a single shared implementation, since both use the same pythonic-style tool-calling format (differing only in system tool list wrapping). Also fixes argument parsing for Python literals (True/False/None → JSON equivalents). Users of LFM2/LFM2.5 models get more robust tool-calling support.
 
 **Affected areas:** common, chat
-
----
 
 *Report generated 2026-06-08T09:38:41.176Z | Next update: tomorrow*

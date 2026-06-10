@@ -9,18 +9,16 @@
 
 | Metric | Count |
 |--------|-------|
-| PRs analyzed | 12 |
-| Backend PRs | 2 |
-| Bug fixes | 3 |
-| Performance PRs | 3 |
-| Model Support | 1 |
-| Server/API | 1 |
-| CLI/Tooling | 0 |
-| Documentation | 0 |
-| Build/CI | 2 |
-| Other | 0 |
+| PRs analyzed | 8 |
+| Bug Fix PRs | 3 |
+| Build/CI PRs | 2 |
+| Backend PRs | 1 |
+| Performance PRs | 1 |
+| Server/API PRs | 1 |
 
 ---
+
+
 
 ## 🔍 PR Details
 
@@ -32,7 +30,6 @@
 
 **Affected areas:** ggml-cpu, ops
 
----
 
 ### [Server/API] — PR #24190: Always export idle slots to RAM
 
@@ -42,7 +39,6 @@
 
 **Affected areas:** server, KV cache
 
----
 
 ### [Bug Fix] — PR #24317: Fix plamo2 attention key/value length regression
 
@@ -52,7 +48,6 @@
 
 **Affected areas:** model, plamo2
 
----
 
 ### [Bug Fix] — PR #24305: Fix ggml-cpu rms_norm_back aliasing bug
 
@@ -62,7 +57,6 @@
 
 **Affected areas:** ggml-cpu, ops
 
----
 
 ### [Build/CI] — PR #24308: Add clang-format job for ggml-webgpu
 
@@ -72,37 +66,6 @@
 
 **Affected areas:** CI, ggml-webgpu
 
----
-
-### [Other] — PR #24178: Unify and fix LFM2/LFM2.5 tool parser
-
-**Merged:** 2026-06-05 | **Author:** @tdakhran
-
-**Summary:** Merges the separate LFM2 and LFM2.5 tool-calling parsers into a single shared implementation since both models use the same pythonic-style tool-calling format (the only difference being LFM2's additional `<|tool_list_start|>/<|tool_list_end|>` wrappers). The fix extends argument parsing to convert Python literals (`True`/`False`/`None`) to JSON equivalents, handle single-quoted strings, and support dotted function names like `Calendar.create_event`. Users of LFM2 and LFM2.5 models will now have working tool-calling capabilities.
-
-**Affected areas:** common/chat
-
----
-
-### [Performance] — PR #21845: SYCL multi-column MMVQ (~45% speculative decoding speedup on Intel Arc)
-
-**Merged:** 2026-06-05 | **Author:** @masonmilby
-
-**Summary:** Ports the multi-column MMVQ optimization from the CUDA backend to SYCL, enabling the matrix-vector quantization kernel to compute all columns in a single dispatch instead of launching a separate kernel per column. Also relaxes `should_reorder_tensor` from `ne[1] == 1` to `ne[1] <= 8` to enable the reorder-multicol kernel path. Benchmarked on 2× Intel Arc Pro B70 with Qwen3.6-27B: speculative decoding goes from -12.3% regressive to +40.1% speedup at Q4_K_XL and +95.7% at Q8_K_XL. This is a major win for Intel Arc GPU users doing speculative decoding with MTP.
-
-**Affected areas:** ggml-sycl, mmvq
-
----
-
-### [Model Support] — PR #24077: Add Gemma 4 "unified" variant
-
-**Merged:** 2026-06-03 | **Author:** @ngxson
-
-**Summary:** Adds support for Gemma 4's "unified" model variant in the MTMD (multimodal) pipeline and model loader. The unified variant combines text, vision, and audio processing in a single model. This extends llama.cpp's multimodal capabilities to cover Gemma 4's latest architecture. Users can now convert and run Gemma 4 unified models.
-
-**Affected areas:** mtmd, model, convert scripts
-
----
 
 ### [Performance] — PR #24125: Fix Step35 MTP KV cache allocation for all layers
 
@@ -112,7 +75,6 @@
 
 **Affected areas:** model, KV cache, speculative decoding
 
----
 
 ### [Build/CI] — PR #23911: Disable ccache for MSVC Windows release jobs
 
@@ -122,7 +84,6 @@
 
 **Affected areas:** CI, build
 
----
 
 ### [Bug Fix] — PR #23425: Remove unnecessary mmproj download when users pass --no-mmproj
 
@@ -131,17 +92,5 @@
 **Summary:** Fixes a bug where the mmproj (multimodal projector) file was still being downloaded even when users passed the `--no-mmproj` flag. The flag was only used to clear `params.mmproj` after the download had already completed. Additionally, the `download_mmproj` flag in `common_download_model` was hardcoded to true. Users passing `--no-mmproj` will no longer waste bandwidth downloading unnecessary files. Fixes #23265.
 
 **Affected areas:** common, download, CLI
-
----
-
-### [Performance] — PR #24006: OpenCL use flat GEMV variants for very large M
-
-**Merged:** 2026-06-02 | **Author:** @lhez
-
-**Summary:** Optimizes the OpenCL backend by routing very large M (vocabulary-sized) matrix-vector multiplications to flat GEMV kernel variants instead of the slower noshuffle variants. Profiling showed that `gemv-noshuffle` kernels for Q4_K and Q6_K were particularly slow with large M dimensions seen in vocabulary projection layers. OpenCL users on Qualcomm/AMD GPUs will see faster vocabulary head projection performance.
-
-**Affected areas:** ggml-opencl, kernels
-
----
 
 *Report generated 2026-06-09T09:11:41.328Z | Next update: tomorrow*

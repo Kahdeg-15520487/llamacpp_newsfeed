@@ -9,17 +9,15 @@
 
 | Metric | Count |
 |--------|-------|
-| PRs analyzed | 9 |
-| Backend PRs | 3 |
-| Bug fixes | 1 |
+| PRs analyzed | 7 |
+| Backend PRs | 2 |
+| Model Support PRs | 2 |
 | Performance PRs | 2 |
-| Model Support | 2 |
-| Server/API | 0 |
-| CLI/Tooling | 0 |
-| Documentation | 1 |
-| Other | 0 |
+| Documentation PRs | 1 |
 
 ---
+
+
 
 ## 🔍 PR Details
 
@@ -31,7 +29,6 @@
 
 **Affected areas:** model loading, mtmd, python scripts
 
----
 
 ### [Model Support] — PR #22716: Add support for granite multilingual embeddings R2
 
@@ -41,17 +38,6 @@
 
 **Affected areas:** model loading, modern-bert, tokenizer config
 
----
-
-### [Backend] — PR #23897: llama: only use one iGPU device by default
-
-**Merged:** 2026-05-31 | **Author:** @0cc4m
-
-**Summary:** Fixes an issue where multiple backends (CUDA and Vulkan) could both report the same integrated GPU, causing models to be incorrectly split across backends. The fix restricts auto-detection to a single iGPU, preventing the split. This primarily affects users with systems like the DGX Spark where the same iGPU is reported by both CUDA and Vulkan backends.
-
-**Affected areas:** device detection, Vulkan, CUDA
-
----
 
 ### [Backend] — PR #23729: mmvq Optim: add MMVQ_PARAMETERS_TURING for SM75
 
@@ -61,7 +47,6 @@
 
 **Affected areas:** CUDA backend, mmvq kernel, Turing GPUs
 
----
 
 ### [Backend] — PR #23227: CUDA: route batch>=4 quantized matmul to MMQ on AMD MFMA hardware
 
@@ -71,7 +56,6 @@
 
 **Affected areas:** CUDA backend, AMD ROCm/HIP, MFMA dispatch
 
----
 
 ### [Performance] — PR #23796: hexagon: minor refresh for HMX FA and MM
 
@@ -81,17 +65,6 @@
 
 **Affected areas:** Hexagon backend, flash attention, matrix multiplication
 
----
-
-### [Bug Fix] — PR #23897: llama: only use one iGPU device by default
-
-**Merged:** 2026-05-31 | **Author:** @0cc4m
-
-**Summary:** (Covered above under Backend — this fixes a bug where models were incorrectly split across backends on multi-backend systems.)
-
-**Affected areas:** device detection
-
----
 
 ### [Documentation] — PR #24104: readme: add status badges
 
@@ -101,7 +74,6 @@
 
 **Affected areas:** README
 
----
 
 ### [Performance] — PR #23785: server: minor tweaks to use more cpp features
 
@@ -110,7 +82,5 @@
 **Summary:** Modernizes the HTTP server C++ code by increasing usage of `const`, `auto`, `static_cast<>`, and fixing uninitialized constructor parameters. While primarily a code quality improvement, the more precise typing helps compilers optimize better. No user-facing behavioral changes.
 
 **Affected areas:** server code, C++ modernization
-
----
 
 *Report generated 2026-06-04T09:22:34.640Z | Next update: tomorrow*
