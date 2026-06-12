@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-11
+> Last updated: 2026-06-12
 
 ---
 
@@ -424,6 +424,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 | Date | Changes |
 |------|---------|
+| 2026-06-12 | Reviewed — no changes needed. Today's big news is the EAGLE3 speculative decoding merge (#18039), plus Vulkan buffer optimization (#23973), Asahi Linux fix (#24306), OpenCL Adreno Q5 kernels (#24319), EXIF orientation fix in the web UI (#24196), CUDA concat scalar support (#24011), and SYCL CI fix (#24387). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-11 | Reviewed — no changes needed. Today's PRs fix server checkpoint restore for SWA models (#24411), BERT BOS/CLS token wrapping (#24428), and WPM accent normalization for case-sensitive models (#24371). All are correctness fixes for specific model families — no changes to run command flags, --ctx-size recommendations, --flash-attn, or --tensor-split values. |
 | 2026-06-10 | Reviewed — no changes needed. Today's PRs are minor: speculative ngram-map-k4v logging name fix (#24253) and komac version bump in CI (#24396). Neither changes any run command flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other command-line flags. |
 | 2026-06-09 | Reviewed — no changes needed. Today's PRs include: GGML_OP_COL2IM_1D CPU (#24206) for audio vocoder upsampling; idle slot RAM export fix (#24190) improving parallel slot KV caching; plamo2 attention_key/value_length regression fix (#24317); rms_norm_back aliasing correctness fix (#24305); ggml-webgpu clang-format CI (#24308); LFM2/LFM2.5 tool parser unification (#24178); SYCL multi-column MMVQ (#21845) delivering ~45% speculative decoding speedup on Intel Arc; Gemma 4 unified variant support (#24077); Step35 MTP KV cache allocation fix (#24125) reducing draft KV cache from 216 MiB to 18 MiB; CI ccache disable for MSVC (#23911); --no-mmproj download fix (#23425); OpenCL flat GEMV for large M (#24006). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
