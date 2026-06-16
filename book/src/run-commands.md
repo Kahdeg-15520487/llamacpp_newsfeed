@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-15
+> Last updated: 2026-06-16
 
 ---
 
@@ -426,6 +426,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 |------|---------|
 | 2026-06-13 | Reviewed — no changes needed. Today's PRs include PWA support for the web UI (#23871), mtmd batching API for faster multimodal encoding (#24384), reasoning budget WebUI precedence fix (#24517), Vulkan pipeline barriers for Intel GPU correctness (#23770), fit module refactoring (#24506, #24522), and CI release fixes (#24544, #24545). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-15 | Reviewed — no changes needed. Today's PRs include SVG code block rendering in the web UI (#24080), chat whitespace parsing fix (#24624), LoRA converter arch retrieval fix (#24621), and reasoning block markdown rendering (#24611). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
+| 2026-06-16 | Reviewed — no changes needed. Today's PRs are SYCL/Vulkan backend improvements (GGML_SYCL_F16 defaulting to ON #23996, UMA host-visible buffers #22930, SYCL Q6_K MoE reorder #24452, Vulkan col2im_1d #24425, gated_delta_net S_v=16 #24581, SYCL EXPM1/FLOOR/TRUNC/ROUND #24363), speculative decoding enhancements (eagle3 backend sampling #24655, spec metrics #24536), and a llama-bench --offline flag #24511. None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-14 | Reviewed — no changes needed. Today's PRs include EAGLE3 speculative decoding (#18039), cohere2-MoE architecture support (#24260), UI embed crash fix (#24597), CI improvements for SYCL check-release (#24583) and CUDA label renaming (#24594), and cohere2moe vocab fix (#24601). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-12 | Reviewed — no changes needed. Today's big news is the EAGLE3 speculative decoding merge (#18039), plus Vulkan buffer optimization (#23973), Asahi Linux fix (#24306), OpenCL Adreno Q5 kernels (#24319), EXIF orientation fix in the web UI (#24196), CUDA concat scalar support (#24011), and SYCL CI fix (#24387). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-11 | Reviewed — no changes needed. Today's PRs fix server checkpoint restore for SWA models (#24411), BERT BOS/CLS token wrapping (#24428), and WPM accent normalization for case-sensitive models (#24371). All are correctness fixes for specific model families — no changes to run command flags, --ctx-size recommendations, --flash-attn, or --tensor-split values. |
