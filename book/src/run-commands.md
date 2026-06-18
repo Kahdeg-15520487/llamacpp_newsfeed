@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-17
+> Last updated: 2026-06-18
 
 ---
 
@@ -424,6 +424,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 | Date | Changes |
 |------|---------|
+| 2026-06-18 | Reviewed — no changes needed. Today's PRs include server model management API (#23976), SYCL dev2dev memcpy fix for multi-GPU stability (#24476), SYCL env var rename (#24719), SYCL Q1_0 MUL_MAT/OUT_PROD support (#24721) delivering up to 19.6x speedup on Intel Arc, CI check-release message parsing fix (#24751), and desktop app self-update gating to llama-install.sh builds only (#24754). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-17 | Reviewed — no changes needed. Today's PRs include major OpenVINO backend update (OV 2026.2, gemma4 support, context-shift, Q5_1, #24503), OpenCL decode optimization (up to +57% token gen speed #24504), Vulkan buffer memory property fix (#24326), SYCL USM system allocations (#22526), SYCL MoE async copy use-after-free fix (#24676), SYCL FP16 ops completeness (#24692), CUDA device reset revert restoring stability (#24715), UI MCP SSE transport fix (#24500), UI mermaid/SVG source toggle (#24652), and CI Vulkan Docker image fix (#24595). Also the logging queue now enforces a max capacity to prevent unbounded growth (#24490). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-16 | Reviewed — no changes needed. Today's PRs are SYCL/Vulkan backend improvements (GGML_SYCL_F16 defaulting to ON #23996, UMA host-visible buffers #22930, SYCL Q6_K MoE reorder #24452, Vulkan col2im_1d #24425, gated_delta_net S_v=16 #24581, SYCL EXPM1/FLOOR/TRUNC/ROUND #24363), speculative decoding enhancements (eagle3 backend sampling #24655, spec metrics #24536), and a llama-bench --offline flag #24511. None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-15 | Reviewed — no changes needed. Today's PRs include SVG code block rendering in the web UI (#24080), chat whitespace parsing fix (#24624), LoRA converter arch retrieval fix (#24621), and reasoning block markdown rendering (#24611). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
