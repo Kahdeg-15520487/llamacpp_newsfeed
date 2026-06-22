@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-21
+> Last updated: 2026-06-22
 
 ---
 
@@ -424,6 +424,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 | Date | Changes |
 |------|---------|
+| 2026-06-22 | Reviewed — no changes needed. Today's 10 PRs include: server batch construction refactor into pre-/decode/post-decode phases (#24843), real-time model load progress tracking via /models/sse (#24828, #24865, #24870), jinja call statement support (#24847), ac parser for stricter grammar generation (#24869), edit_file crash fix (#24893), mtmd_get_memory_usage speedup from 200ms to 20ms (#24867), restored "verbose" schema field (#24864), and Android Termux build docs (#21812). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-21 | Reviewed — no changes needed. Today's PR adds multi-layer MTP speculative decoding for Step3.5/3.7 flash models (#24340), replacing single-block MTP with chained heads for up to ~15% higher token throughput. This is a model-specific speculative decoding feature for Step model users and does not change any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-20 | Reviewed — no changes needed. Today's PRs add EAGLE3 speculative decoding support for Qwen3.5/3.6 (#24593), server --agent flag (#24801), server logprobs optimization (~12× faster #24796), webui naming cleanup (#24817), router IPC refactor (#24821), cpp-httplib 0.48.0 update with security fixes (#24787), WebGPU F16 toggle for Vulkan+NVIDIA (#24723), mtmd Windows UTF-8 fix (#24779), mtmd 5 bug fixes (#24784), comment support in API key file (#23168), and Docker UI build fix (#24794). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-19 | Reviewed — no changes needed. Today's PRs include: server crash fix for unbounded `n_discard` in context shifting (#24786), router args forwarding fix for child instances (#24760, from yesterday), slot selection consolidation into `get_available_slot` (#24755), POWER10 K-tails MMA matmul optimization delivering ~60% PP speedup on ppc64le (#24753), and mtmd preprocessing refactor groundwork for llava-uhd batching (#24736). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
