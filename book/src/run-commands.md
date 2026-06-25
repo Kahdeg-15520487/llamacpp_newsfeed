@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-24
+> Last updated: 2026-06-25
 
 ---
 
@@ -424,6 +424,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 | Date | Changes |
 |------|---------|
+| 2026-06-25 | Reviewed — no changes needed. Today's PRs include: SYCL --split-mode tensor all-reduce for dual Intel Arc GPUs (+20-78% speedup vs layer-mode, #24152), multi-GPU CUDA teardown crash fix on Blackwell GPUs (#24935), CUDA binary ops integer overflow fix for large tensors (#24706), and sidebar-on-desktop setting fix after the nav refactor (#24979). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-24 | Reviewed — no changes needed. Today's PRs include: Vulkan FA FP16 overflow fix for flash attention scalar/CM1 paths (#24909), UI loading bar below model picker (#24931), major web UI redesign with new logo and mobile UX overhaul (#24897), and LFM2.5-ColBERT-350M / LFM2.5-Embedding-350M model support (#24913). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-23 | Reviewed — no changes needed. Today's PRs include: WebGPU MTP mat-vec optimization delivering 2-3x MTP speedup on Apple Silicon (#24811) and server router dedicated download process (#24834). Neither changes any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-22 | Reviewed — no changes needed. Today's 10 PRs include: server batch construction refactor into pre-/decode/post-decode phases (#24843), real-time model load progress tracking via /models/sse (#24828, #24865, #24870), jinja call statement support (#24847), ac parser for stricter grammar generation (#24869), edit_file crash fix (#24893), mtmd_get_memory_usage speedup from 200ms to 20ms (#24867), restored "verbose" schema field (#24864), and Android Termux build docs (#21812). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
