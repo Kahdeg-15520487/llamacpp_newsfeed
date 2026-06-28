@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-27
+> Last updated: 2026-06-28
 
 ---
 
@@ -424,6 +424,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 | Date | Changes |
 |------|---------|
+| 2026-06-28 | Reviewed — no changes needed. Today's PRs include: OpenCL flash attention improvement with quantized KV cache support (#25069) and further log reduction (default verbosity lowered, subsystems get COM_*/SPC_* macros, #25078). Neither PR changes the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-27 | Reviewed — no changes needed. Today's PRs include: CUDA per-token sync reduction with fixed multi-GPU pipeline parallelism (#20793), Vulkan step operator fix for zero inputs (#25036), consistent binary naming (rpc-server → llama-rpc-server, #25045), windows-openvino CI release gate (#25022), and test-chat-template --no-common option fix (#25075). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-26 | Reviewed — no changes needed. Today's PRs include: SSE replay buffer for resumable streaming (#23226), CUDA out_prod broadcast batching with up to 282× speedup (#24426), ARM SVE ggml_vec_dot_f32 correctness fix (#24699), and SYCL softmax NaN clamp fix (#24941). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-06-25 | Reviewed — no changes needed. Today's PRs include: SYCL --split-mode tensor all-reduce for dual Intel Arc GPUs (+20-78% speedup vs layer-mode, #24152), multi-GPU CUDA teardown crash fix on Blackwell GPUs (#24935), CUDA binary ops integer overflow fix for large tensors (#24706), and sidebar-on-desktop setting fix after the nav refactor (#24979). None of these PRs change the -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
@@ -448,8 +449,4 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 | 2026-06-06 | Reviewed — no changes needed. PRs this week (TP granularity 128, CUDA KV-cache reservation, Qwen3.6 MTP fix, Gemma 4 unified, EXAONE 4.5, Granite4 Vision, Granite Embeddings R2) are backend/model additions or correctness fixes that don't change run command flags or recommendations. Note: Qwen3.6 MTP users should re-download updated GGUFs after the post-norm MTP fix (#24025). |
 | 2026-06-05 | **PR #23792**: Tensor parallelism (`--split-mode tensor`) now supports quantized KV cache (`--type-k`, `--type-v`). The previous restriction is lifted, allowing TP users to reduce KV cache VRAM with quantization. Users should add `--type-k q8_0 --type-v q8_0` (or Q4_0 for more savings) to multi-GPU tensor-split commands. No flag changes needed for layer-split mode. |
 | 2026-06-04 | Reviewed — no changes needed. Today's PRs (Gemma 4 unified, Granite Embeddings R2, iGPU dedup, Turing MMVQ tuning, AMD MFMA dispatch, Hexagon refresh) are backend/model additions that don't change run command flags or recommendations. |
-| 2026-06-04 | Initial commands based on current llama.cpp build. Sourced from Unsloth GGUF repos. Added interactive quant selector (Q4_K_M / Q5_K_M / Q6_K). |
-
----
-
-*This page is updated daily by the pi-agent-core + DeepSeek pipeline based on recent llama.cpp merged PRs.*
+| 2026-06-04 | Initial commands based on current llama.cpp build. Sourced from
