@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-06-30
+> Last updated: 2026-07-01
 
 ---
 
@@ -422,6 +422,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 
 ## Changelog
 
+| 2026-07-01 | Reviewed — no changes needed. Today's PRs: CUDA FA `flash_attn_mask_to_KV_max` fully enrolled in PDL for code consistency (#25185), and AVX2/AVX CPU optimization for NVFP4 dot product delivering ~10.7x speedup on CPU (#23961). Neither PR changes any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference.
 | Date | Changes |
 |------|---------|
 | 2026-06-30 | Reviewed — no changes needed. Today's only PR is #25143 (ggml-webgpu NVFP4 support), which adds NVFP4 format support to the WebGPU backend. This is a backend coverage improvement for WebGPU users running NVFP4 GGUFs and does not change any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
