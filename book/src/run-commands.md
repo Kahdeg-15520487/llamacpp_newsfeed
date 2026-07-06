@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-07-05
+> Last updated: 2026-07-06
 
 ---
 
@@ -423,6 +423,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 ## Changelog
 
 | 2026-07-05 | Reviewed — no changes needed. Today's PRs: CPU quantized concat correctness fix for DeepSeek V4 KV cache prep (#25247), DFlash speculative decoding K/V rotation crash fix on AMD GPUs (#25215), and UI display/behavior settings made syncable via --ui-config-file (#25132). All are bug fixes or UI config improvements — none change any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
+| 2026-07-06 | Reviewed — no changes needed. Today's PRs: ARM NVFP4 dot product UE4M3 LUT delivering ~5.3x PP speedup on Graviton2 (#25331), AIX tiled matmul fix delivering ~2x PP speedup on POWER (#25199), Vulkan CEIL_DIV 32-bit overflow fix for mobile GPU compatibility (Mali/Adreno/CIX, #25245), and Ctrl+B sidebar toggle shortcut restoration in the web UI (#25307). None of these PRs change any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-07-04 | Reviewed — no changes needed. Today's PRs: UI streaming performance optimization with 3× scripting time reduction (#25225), and StepFun chat model infinite reasoning loop fix (#25238). Neither PR changes any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-07-03 | Reviewed — no changes needed. Today's PRs: CUDA GDN copy fusion delivering ~3-4% speedup on Qwen3.6 with MTP (#23940), UI tool message conversation isolation fix (#25177), MCP Servers opt-in onboarding dialog (#25239), and cpp-httplib 0.49.0 update with security fixes (#25218). None of these PRs change any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | Date | Changes |
