@@ -2,7 +2,7 @@
 
 > **Living document** — updated daily as new llama.cpp PRs bring new flags, backends, and optimizations.
 > **Quantization data sourced from [Unsloth HuggingFace GGUF repos](https://huggingface.co/unsloth)**
-> Last updated: 2026-07-09
+> Last updated: 2026-07-10
 
 ---
 
@@ -421,6 +421,7 @@ huggingface-cli download unsloth/gemma-3-27b-it-GGUF gemma-3-27b-it-Q6_K.gguf --
 ---
 
 ## Changelog
+| 2026-07-10 | Reviewed — no changes needed. Today's PRs: server tools overhaul removing apply_diff and improving edit/find/grep tools inspired by pi-agent with new tools_io abstract class (#25498), llama-cli crash fix on wrong server base URL (#25497), UI tooltip flickering fix with 4px offset (#25503), and conversation export now includes full message tree with all edited/regenerated versions instead of active path only (#25501). None of these PRs change any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-07-09 | Reviewed — no changes needed. Today's PRs: Metal CONV_2D_DW depthwise convolution GPU support for MobileNet-style architectures on Apple Silicon (#21565), CUDA snake fusion matcher parity fix aligning F32 type checks and contiguity guards with other backends (#25460), HIP/ROCm fast-math optimizations delivering ~8-15% flash attention throughput on AMD GPUs (#24668), Vulkan FA mask_opt disabled on GCN hardware for up to +41% prefill speed on older AMD GPUs (#24362), server checkpoint min-step respect fix preventing unnecessary checkpoints on every user message (#25420), and llama-bench params.offline initialization fix (#25476). None of these PRs change any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-07-08 | Reviewed — no changes needed. Today's PRs: Web UI context usage gauge with donut progress indicator and token breakdown panel (#25340), SSE replay buffer pimpl refactor for cleaner server stream code (#25047), prompts log directory auto-creation at server startup (#25322), and parallel decoding fix for recurrent models with partial rollback ensuring correct batch splitting (#25278). None of these PRs change any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
 | 2026-07-07 | Reviewed — no changes needed. Today's PRs: DeepSeek-V4 quantized KV cache Hadamard rotation fix making q8_0 KV cache produce correct output instead of garbage (#25202), and SYCL backend CONT & CPY UT fixes expanding bf16, q1_0, mxpfp4, nvfp4, and other quantized type support with permuted src tensors (#25231). Neither PR changes any -hf flags, --ctx-size recommendations, --flash-attn, --tensor-split values, or other run command flags used in this reference. |
