@@ -6,6 +6,7 @@
 
 ## Reports
 
+- [2026-07-12](./2026-07-12-llama-cpp-news.md)
 - [2026-07-11](./2026-07-11-llama-cpp-news.md)
 - [2026-07-10](./2026-07-10-llama-cpp-news.md)
 - [2026-07-09](./2026-07-09-llama-cpp-news.md)
